@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MamaPlan · Prête pour le Jour J</title>
+<meta name="description" content="MamaPlan aide la future maman à tout préparer pour l'accouchement : consultations, budget en FCFA, valise, transport de nuit, donneur de sang et signes d'alerte de l'OMS. Hors ligne, sans compte, en français et en anglais.">
+<meta property="og:title" content="MamaPlan · Prête pour le Jour J">
+<meta property="og:description" content="Consultations, budget, valise, transport, donneur de sang, signes d'alerte. Tout prêt avant le jour de l'accouchement.">
+<meta property="og:image" content="img/og-mamaplan.jpg">
+<link rel="icon" href="app/icons/icon-192.png">
+<style>
+:root{--bg:#FFF8F1;--card:#fff;--ink:#2A1A2E;--muted:#6E5B70;--line:#EADCD3;--brand:#7A2E5C;--brand2:#B4477F;--sun:#F3A73B;--sunsoft:#FFF0D6;--danger:#C2262E;--ok:#2F7D57;--wa:#1F9D55}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1C1320;--card:#291D2E;--ink:#F6EDF3;--muted:#C2B0C2;--line:#433446;--brand:#E58BBE;--brand2:#F0A6CF;--sunsoft:#3A2C1C}}
+:root[data-theme="dark"]{--bg:#1C1320;--card:#291D2E;--ink:#F6EDF3;--muted:#C2B0C2;--line:#433446;--brand:#E58BBE;--brand2:#F0A6CF;--sunsoft:#3A2C1C}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.w{max-width:1040px;margin:0 auto;padding:0 16px}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:22px;color:var(--brand)}.logo img{width:34px;height:34px;border-radius:50%}
+.lang button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 10px;cursor:pointer;color:var(--ink)}.lang button.on{border-color:var(--brand);color:var(--brand);font-weight:700}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:24px 0 36px}
+h1{font-size:clamp(30px,6vw,52px);line-height:1.08;margin:0 0 14px;letter-spacing:-1px}h1 em{font-style:normal;color:var(--brand)}
+h2{font-size:clamp(24px,4vw,34px);margin:0 0 12px;letter-spacing:-.5px}h3{margin:0 0 6px}
+.lead{font-size:19px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 22px;border-radius:16px;font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:17px}
+.b1{background:var(--brand);color:#fff}.b2{background:transparent;border:2px solid var(--brand);color:var(--brand)}.bwa{background:var(--wa);color:#fff}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 8px}
+.phone{justify-self:center;width:min(300px,80vw);border-radius:34px;border:10px solid #2A1A2E;overflow:hidden;box-shadow:0 20px 50px rgba(74,30,58,.25);background:#2A1A2E}.phone img{display:block;width:100%}
+section{padding:40px 0;border-top:1px solid var(--line)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}.stat b{display:block;font-size:34px;color:var(--brand);line-height:1.1}.stat small{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+.card .ic{font-size:26px}
+.shots{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}.shots img{width:220px;border-radius:18px;border:1px solid var(--line);scroll-snap-align:start;flex:none}
+.prices{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:stretch}
+.price{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column}.price.main{border-color:var(--brand)}
+.price .amt{font-size:38px;font-weight:800}.price ul{padding-left:18px;flex:1}.price .tag{align-self:flex-start;background:var(--sun);color:#2A1A2E;font-weight:700;font-size:12px;border-radius:99px;padding:3px 10px;margin-bottom:6px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0}summary{font-weight:700;cursor:pointer}
+.safe{background:var(--sunsoft);border-radius:18px;padding:18px}
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.steps .card:before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;font-weight:800;margin-bottom:8px}
+footer{padding:30px 0 60px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+.src{font-size:13px;color:var(--muted)}
+[data-l]{display:none}html[lang=fr] [data-l=fr],html[lang=en] [data-l=en]{display:revert}
+@media (max-width:760px){.hero,.grid,.prices,.steps{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.phone{width:min(260px,75vw)}}
+</style>
+</head>
+<body>
+<div class="w">
+<header><div class="logo"><img src="app/icons/icon-192.png" alt="">MamaPlan</div>
+<div class="lang"><button data-set="fr">FR</button> <button data-set="en">EN</button></div></header>
+
+<!-- ===================== FRANÇAIS ===================== -->
+<div data-l="fr">
+<div class="hero">
+  <div>
+    <h1>Le jour de l'accouchement, <em>tout est déjà prêt.</em></h1>
+    <p class="lead">MamaPlan organise avec vous les consultations, le budget en FCFA, la valise, le transport de nuit, le donneur de sang et les numéros d'urgence. Sur votre téléphone, même sans connexion.</p>
+    <div class="ctas"><a class="btn b1" href="app/">Essayer gratuitement</a><a class="btn b2" href="#prix">Voir les prix</a></div>
+    <p class="src">Sans compte. Vos informations restent sur votre téléphone. Français et anglais.</p>
+  </div>
+  <div class="phone"><img src="img/ecran-accueil.jpg" alt="Écran d'accueil de MamaPlan : compte à rebours et préparation"></div>
+</div>
+
+<section>
+  <h2>Pourquoi préparer le Jour J ?</h2>
+  <p>Quand le travail commence, souvent la nuit, il faut tout de suite savoir où aller, avec qui, avec quel argent, et qui appeler. Une étude menée à Bamenda auprès de 345 femmes enceintes a montré que la plupart avaient mis de l'argent de côté, mais que peu avaient organisé le reste :</p>
+  <div class="stats">
+    <div class="stat"><b>57 %</b><small>avaient prévu un moyen de transport</small></div>
+    <div class="stat"><b>23 %</b><small>avaient identifié un donneur de sang</small></div>
+    <div class="stat"><b>19 %</b><small>étaient vraiment prêtes (7 étapes ou plus)</small></div>
+  </div>
+  <p class="src">Source : Awareness and practice of birth preparedness and complication readiness among pregnant women in the Bamenda Health District, Cameroon. BMC Pregnancy and Childbirth, 2019.</p>
+</section>
+
+<section>
+  <h2>Ce que MamaPlan fait pour vous</h2>
+  <div class="grid">
+    <div class="card"><div class="ic">📅</div><h3>Vos 8 consultations</h3><p>Les dates calculées depuis votre date prévue, selon la recommandation de l'OMS, avec les questions à poser à chaque visite.</p></div>
+    <div class="card"><div class="ic">💰</div><h3>Votre budget naissance</h3><p>Le total en FCFA, ce que la famille a promis, et la somme à mettre de côté chaque semaine jusqu'au terme.</p></div>
+    <div class="card"><div class="ic">🧳</div><h3>Votre valise</h3><p>Maman, bébé, papiers, accompagnante. Cochez, puis envoyez ce qui manque à la famille sur WhatsApp.</p></div>
+    <div class="card"><div class="ic">🚕</div><h3>Votre plan Jour J</h3><p>Maternité, deux transports joignables la nuit, accompagnante, donneurs de sang, garde des enfants, où est l'argent.</p></div>
+    <div class="card"><div class="ic">🚨</div><h3>Les signes d'alerte</h3><p>Ceux de l'OMS, pendant la grossesse et après la naissance, avec un bouton pour appeler la maternité. Toujours gratuits.</p></div>
+    <div class="card"><div class="ic">📄</div><h3>Votre fiche à montrer</h3><p>Un plan de naissance clair à imprimer ou à envoyer, et un relevé des contractions à montrer à la sage-femme.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Comment ça marche</h2>
+  <div class="steps">
+    <div class="card"><h3>Ouvrez MamaPlan</h3><p>Indiquez votre date prévue (ou la date de vos dernières règles). C'est tout.</p></div>
+    <div class="card"><h3>Suivez « À faire maintenant »</h3><p>MamaPlan vous montre les étapes qui manquent et votre score de préparation.</p></div>
+    <div class="card"><h3>Partagez avec la famille</h3><p>Budget, valise et plan partent sur WhatsApp en un geste. Chacun sait quoi faire.</p></div>
+  </div>
+  <div class="shots" style="margin-top:18px">
+    <img src="img/ecran-budget.jpg" alt="Budget naissance"><img src="img/ecran-valise.jpg" alt="Valise maternité"><img src="img/ecran-plan.jpg" alt="Plan Jour J"><img src="img/ecran-alertes.jpg" alt="Signes d'alerte"><img src="img/ecran-fiche.jpg" alt="Fiche plan de naissance">
+  </div>
+</section>
+
+<section id="prix">
+  <h2>Prix</h2>
+  <div class="prices">
+    <div class="price"><h3>Gratuit</h3><div class="amt">0 F</div><ul><li>Compte à rebours</li><li>8 consultations et questions</li><li>Valise à cocher</li><li>Signes d'alerte</li><li>3 numéros d'urgence</li></ul><a class="btn b2" href="app/">Commencer</a></div>
+    <div class="price main"><span class="tag">Le plus choisi</span><h3>MamaPlan Complet</h3><div class="amt">3 000 F</div><ul><li>Tout le gratuit</li><li>Budget naissance et participations</li><li>Plan Jour J complet</li><li>Fiche à imprimer</li><li>Partage WhatsApp</li><li>Relevé des contractions</li><li>Sauvegarde</li><li>Guide PDF et kit imprimable</li></ul><a class="btn b1" href="https://wpmlxdqd.mychariow.market" data-buy>Obtenir mon code</a></div>
+    <div class="price"><h3>Coffret cadeau</h3><div class="amt">5 000 F</div><ul><li>MamaPlan Complet pour une future maman</li><li>Carte cadeau personnalisée à envoyer</li><li>Kit imprimable</li></ul><a class="btn b2" href="https://wpmlxdqd.mychariow.market" data-buy>Offrir MamaPlan</a></div>
+  </div>
+  <p class="src">Paiement unique par Mobile Money ou carte bancaire, sur notre boutique sécurisée Chariow. Vous recevez votre code tout de suite après le paiement.</p>
+  <div class="ctas"><a class="btn bwa" href="https://wa.me/237679092458?text=Bonjour%2C%20je%20veux%20MamaPlan">Une question ? WhatsApp</a></div>
+</section>
+
+<section>
+  <h2>Questions fréquentes</h2>
+  <details><summary>Est-ce une application à télécharger sur Play Store ?</summary><p>Non. MamaPlan s'ouvre dans le navigateur de votre téléphone (Chrome, Safari). Vous pouvez l'ajouter à l'écran d'accueil comme une application. Après la première ouverture, elle fonctionne sans connexion.</p></details>
+  <details><summary>Mes informations sont-elles envoyées quelque part ?</summary><p>Non. Tout reste dans votre téléphone. Pas de compte, pas de serveur. Pensez à faire une sauvegarde (bouton dans Réglages) si vous changez de téléphone.</p></details>
+  <details><summary>MamaPlan remplace-t-il la sage-femme ?</summary><p>Non. MamaPlan vous aide à vous organiser et à poser les bonnes questions. Il ne pose aucun diagnostic. Suivez toujours les conseils de votre sage-femme ou de votre médecin.</p></details>
+  <details><summary>Je suis à 8 mois, est-ce trop tard ?</summary><p>Non, c'est même le bon moment : en 15 minutes, vous remplissez le plan, la valise et les contacts. Les signes d'alerte servent aussi après la naissance.</p></details>
+  <details><summary>Comment recevoir mon code ?</summary><p>Après le paiement sur Chariow, votre code s'affiche à l'écran et arrive par e-mail. Dans MamaPlan, allez dans Budget ou Réglages, tapez le code, et tout est débloqué.</p></details>
+  <details><summary>Puis-je l'offrir ?</summary><p>Oui, avec le coffret cadeau à 5 000 F : vous recevez le code et une carte cadeau personnalisée à envoyer à la future maman.</p></details>
+  <details><summary>Ça marche sur un vieux téléphone ?</summary><p>MamaPlan est très léger (moins de 100 Ko). Il fonctionne sur la plupart des téléphones Android récents et sur iPhone, avec un navigateur à jour.</p></details>
+  <details><summary>Et si je ne suis pas satisfaite ?</summary><p>Essayez d'abord la version gratuite : vous voyez exactement comment MamaPlan fonctionne avant de payer. En cas de problème avec votre code, écrivez-nous sur WhatsApp, nous le réglons.</p></details>
+</section>
+
+<section>
+  <div class="safe"><h3>Notre engagement</h3><p>MamaPlan est un outil d'organisation. Les signes d'alerte viennent des fiches de conseil de l'Organisation mondiale de la santé. Nous ne promettons aucun résultat médical. En cas de doute, appelez ou allez à la maternité, de jour comme de nuit.</p></div>
+</section>
+</div>
+
+<!-- ===================== ENGLISH ===================== -->
+<div data-l="en">
+<div class="hero">
+  <div>
+    <h1>On the day of birth, <em>everything is already ready.</em></h1>
+    <p class="lead">MamaPlan helps you organise check-ups, your budget, the hospital bag, night transport, a blood donor and emergency numbers. On your phone, even offline.</p>
+    <div class="ctas"><a class="btn b1" href="app/">Try it free</a><a class="btn b2" href="#price-en">See prices</a></div>
+    <p class="src">No account. Your information stays on your phone. English and French.</p>
+  </div>
+  <div class="phone"><img src="img/ecran-accueil.jpg" alt="MamaPlan home screen"></div>
+</div>
+<section>
+  <h2>Why prepare for the big day?</h2>
+  <p>Labour often starts at night, and you need to know where to go, with whom, with what money and who to call. A study of 345 pregnant women in Bamenda found that most had saved money, but few had organised the rest:</p>
+  <div class="stats"><div class="stat"><b>57%</b><small>had arranged transport</small></div><div class="stat"><b>23%</b><small>had identified a blood donor</small></div><div class="stat"><b>19%</b><small>were well prepared (7 steps or more)</small></div></div>
+  <p class="src">Source: BMC Pregnancy and Childbirth, 2019, Bamenda Health District, Cameroon.</p>
+</section>
+<section>
+  <h2>What MamaPlan does</h2>
+  <div class="grid">
+    <div class="card"><div class="ic">📅</div><h3>Your 8 check-ups</h3><p>Dates worked out from your due date, following WHO advice, with questions to ask each time.</p></div>
+    <div class="card"><div class="ic">💰</div><h3>Your birth budget</h3><p>The total, what family members promised, and how much to put aside each week.</p></div>
+    <div class="card"><div class="ic">🧳</div><h3>Your hospital bag</h3><p>Tick items, then send what is missing to your family on WhatsApp.</p></div>
+    <div class="card"><div class="ic">🚕</div><h3>Your D-Day plan</h3><p>Maternity unit, two night drivers, companion, blood donors, childcare, where the money is.</p></div>
+    <div class="card"><div class="ic">🚨</div><h3>Danger signs</h3><p>WHO danger signs in pregnancy and after birth, with a button to call the maternity unit. Always free.</p></div>
+    <div class="card"><div class="ic">📄</div><h3>Your sheet to show</h3><p>A clear birth plan to print or send, and a contraction log for your midwife.</p></div>
+  </div>
+</section>
+<section id="price-en">
+  <h2>Prices</h2>
+  <div class="prices">
+    <div class="price"><h3>Free</h3><div class="amt">0 F</div><ul><li>Countdown</li><li>8 check-ups and questions</li><li>Hospital bag checklist</li><li>Danger signs</li><li>3 emergency numbers</li></ul><a class="btn b2" href="app/">Start</a></div>
+    <div class="price main"><span class="tag">Most chosen</span><h3>MamaPlan Complete</h3><div class="amt">3,000 F</div><p class="src">about €4.60</p><ul><li>Everything free</li><li>Birth budget</li><li>Full D-Day plan</li><li>Printable sheet</li><li>WhatsApp sharing</li><li>Contraction log</li><li>Backup</li><li>PDF guide and printable kit</li></ul><a class="btn b1" href="https://wpmlxdqd.mychariow.market" data-buy>Get my code</a></div>
+    <div class="price"><h3>Gift box</h3><div class="amt">5,000 F</div><p class="src">about €7.60</p><ul><li>MamaPlan Complete for a mum-to-be</li><li>Personalised gift card</li><li>Printable kit</li></ul><a class="btn b2" href="https://wpmlxdqd.mychariow.market" data-buy>Give MamaPlan</a></div>
+  </div>
+  <p class="src">One-time payment by Mobile Money or bank card on our secure Chariow store. Your code appears right after payment.</p>
+</section>
+<section>
+  <h2>Questions</h2>
+  <details><summary>Do I download it from the Play Store?</summary><p>No. MamaPlan opens in your phone's browser and can be added to your home screen. After the first visit it works offline.</p></details>
+  <details><summary>Is my information sent anywhere?</summary><p>No. Everything stays on your phone. No account, no server.</p></details>
+  <details><summary>Does MamaPlan replace my midwife?</summary><p>No. It helps you get organised and ask the right questions. It does not diagnose anything. Always follow your midwife or doctor.</p></details>
+  <details><summary>Can I give it as a gift?</summary><p>Yes, with the 5,000 F gift box: you get a code and a personalised gift card to send.</p></details>
+</section>
+<section><div class="safe"><h3>Our commitment</h3><p>MamaPlan is an organisation tool. Danger signs come from World Health Organization counselling sheets. We promise no medical outcome. If in doubt, call or go to the maternity unit, day or night.</p></div></section>
+</div>
+
+<footer>MamaPlan · Lord Samsin Studio · WhatsApp +237 6 79 09 24 58 / +237 6 91 99 60 26<br>
+<a href="conditions.html">Conditions d'utilisation et confidentialité / Terms and privacy</a> · <a href="cadeau/">Carte cadeau / Gift card</a></footer>
+</div>
+<script>
+(function(){
+  var KEY='mamaplan.site.lang';
+  function set(l){document.documentElement.lang=l;document.querySelectorAll('[data-set]').forEach(function(b){b.classList.toggle('on',b.dataset.set===l)});try{localStorage.setItem(KEY,l)}catch(e){}}
+  var saved=null;try{saved=localStorage.getItem(KEY)}catch(e){}
+  set(saved||((navigator.language||'fr').toLowerCase().indexOf('en')===0?'en':'fr'));
+  document.querySelectorAll('[data-set]').forEach(function(b){b.onclick=function(){set(b.dataset.set)}});
+})();
+</script>
+</body>
+</html>

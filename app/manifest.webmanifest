@@ -1,0 +1,15 @@
+{
+  "name": "MamaPlan · Prête pour le Jour J",
+  "short_name": "MamaPlan",
+  "description": "Préparez le jour de l'accouchement : consultations, budget, valise, transport, signes d'alerte.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFF8F1",
+  "theme_color": "#7A2E5C",
+  "lang": "fr",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

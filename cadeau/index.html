@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carte cadeau MamaPlan</title>
+<style>
+:root{--bg:#FFF8F1;--card:#fff;--ink:#2A1A2E;--muted:#6E5B70;--line:#EADCD3;--brand:#7A2E5C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1C1320;--card:#291D2E;--ink:#F6EDF3;--muted:#C2B0C2;--line:#433446;--brand:#E58BBE}}
+:root[data-theme="dark"]{--bg:#1C1320;--card:#291D2E;--ink:#F6EDF3;--muted:#C2B0C2;--line:#433446;--brand:#E58BBE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+main{max-width:560px;margin:0 auto;padding:20px 16px 60px}h1{color:var(--brand);margin:.2em 0}
+label{display:block;font-size:14px;color:var(--muted);margin:12px 0 4px}input,textarea{width:100%;font:inherit;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);min-height:48px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:14px;border:0;font:700 16px system-ui,sans-serif;cursor:pointer;margin-top:10px;width:100%;text-decoration:none}
+.b1{background:#7A2E5C;color:#fff}.wa{background:#1F9D55;color:#fff}
+canvas{width:100%;height:auto;border-radius:18px;margin-top:16px;box-shadow:0 8px 30px rgba(74,30,58,.2)}
+small{color:var(--muted)}
+</style>
+</head>
+<body><main>
+<p><a href="../" style="color:var(--brand)">← MamaPlan</a></p>
+<h1>Carte cadeau MamaPlan</h1>
+<p>Remplissez, téléchargez l'image, puis envoyez-la à la future maman avec le message.</p>
+<label for="to">Pour (prénom de la future maman)</label><input id="to" value="Grâce" maxlength="24">
+<label for="from">De la part de</label><input id="from" value="ta sœur Linda" maxlength="30">
+<label for="code">Code MamaPlan reçu après l'achat</label><input id="code" placeholder="MP-XXXX-XXXX" maxlength="14" autocapitalize="characters">
+<label for="msg">Petit mot</label><textarea id="msg" rows="2" maxlength="90">Pour que le grand jour arrive sans stress. Je pense fort à toi.</textarea>
+<canvas id="c" width="1080" height="1350" aria-label="Aperçu de la carte cadeau"></canvas>
+<button class="btn b1" id="dl">Télécharger l'image</button>
+<a class="btn wa" id="wa" target="_blank" rel="noopener">Envoyer le message sur WhatsApp</a>
+<p><small>Envoyez l'image dans la même conversation WhatsApp. Le code est personnel : ne le publiez pas sur les réseaux.</small></p>
+</main>
+<script>
+(function(){
+  var c=document.getElementById('c'),x=c.getContext('2d'),ids=['to','from','code','msg'];
+  function v(i){return document.getElementById(i).value.trim()}
+  function wrap(t,X,Y,maxW,lh){var w=t.split(' '),line='',y=Y;for(var i=0;i<w.length;i++){var test=line+w[i]+' ';if(x.measureText(test).width>maxW&&i>0){x.fillText(line.trim(),X,y);line=w[i]+' ';y+=lh}else line=test}x.fillText(line.trim(),X,y);return y}
+  function draw(){
+    var g=x.createLinearGradient(0,0,1080,1350);g.addColorStop(0,'#7A2E5C');g.addColorStop(1,'#B4477F');x.fillStyle=g;x.fillRect(0,0,1080,1350);
+    x.globalAlpha=.12;x.fillStyle='#F3A73B';for(var i=0;i<14;i++){x.beginPath();x.arc(100+i*80,140+Math.sin(i)*60,30+(i%3)*14,0,7);x.fill()}x.globalAlpha=1;
+    x.fillStyle='#FFF8F1';x.beginPath();x.roundRect?x.roundRect(70,250,940,900,48):x.rect(70,250,940,900);x.fill();
+    x.textAlign='center';x.fillStyle='#FFF8F1';x.font='800 64px system-ui,sans-serif';x.fillText('MamaPlan',540,150);
+    x.font='500 34px system-ui,sans-serif';x.fillText('Prête pour le Jour J',540,205);
+    x.fillStyle='#7A2E5C';x.font='700 40px system-ui,sans-serif';x.fillText('Un cadeau pour toi,',540,350);
+    x.font='800 88px system-ui,sans-serif';x.fillText(v('to')||'…',540,450);
+    x.fillStyle='#2A1A2E';x.font='400 38px system-ui,sans-serif';var y=wrap(v('msg'),540,540,820,52);
+    x.fillStyle='#6E5B70';x.font='italic 34px system-ui,sans-serif';x.fillText('— '+(v('from')||''),540,y+70);
+    x.fillStyle='#FFF0D6';x.fillRect(150,y+120,780,200);x.fillStyle='#2A1A2E';x.font='600 30px system-ui,sans-serif';x.fillText('Ton code MamaPlan Complet',540,y+175);
+    x.fillStyle='#7A2E5C';x.font='800 64px ui-monospace,Menlo,monospace';x.fillText(v('code').toUpperCase()||'MP-XXXX-XXXX',540,y+265);
+    x.fillStyle='#2A1A2E';x.font='400 30px system-ui,sans-serif';x.fillText('Consultations · budget · valise · transport · alertes',540,1070);
+    x.fillStyle='#FFF8F1';x.font='600 30px system-ui,sans-serif';x.fillText('Ouvre MamaPlan, puis Réglages › J\'ai un code',540,1250);
+  }
+  ids.forEach(function(i){document.getElementById(i).addEventListener('input',draw)});draw();
+  document.getElementById('dl').onclick=function(){var a=document.createElement('a');a.download='carte-cadeau-mamaplan.png';a.href=c.toDataURL('image/png');a.click()};
+  document.getElementById('wa').onclick=function(){var link=location.href.replace(/cadeau\/?.*$/,'app/');this.href='https://wa.me/?text='+encodeURIComponent('🎁 '+(v('to')||'')+', je t\'offre MamaPlan pour préparer le grand jour sereinement.\n\n1. Ouvre : '+link+'\n2. Indique ta date prévue\n3. Va dans Réglages › J\'ai un code et tape : '+(v('code').toUpperCase()||'(code)')+'\n\n'+(v('msg')||'')+'\n— '+(v('from')||''))};
+})();
+</script>
+</body></html>

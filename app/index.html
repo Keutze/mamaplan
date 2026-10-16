@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7A2E5C">
+<meta name="description" content="MamaPlan : préparez le jour de l'accouchement. Consultations, budget, valise, transport et signes d'alerte. Hors ligne, sans compte.">
+<title>MamaPlan</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>:root{
+  --bg:#FFF8F1;--card:#FFFFFF;--ink:#2A1A2E;--muted:#6E5B70;--line:#EADCD3;
+  --brand:#7A2E5C;--brand-2:#B4477F;--sun:#F3A73B;--sun-soft:#FFF0D6;--coral:#E8664F;
+  --ok:#2F7D57;--ok-soft:#E3F3EA;--danger:#C2262E;--danger-soft:#FDE8E8;
+  --radius:18px;--shadow:0 2px 10px rgba(74,30,58,.08);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#1C1320;--card:#291D2E;--ink:#F6EDF3;--muted:#C2B0C2;--line:#433446;--brand:#E58BBE;--brand-2:#F0A6CF;--sun:#F6B95A;--sun-soft:#3A2C1C;--ok:#6FD3A0;--ok-soft:#1E3529;--danger:#FF6B6B;--danger-soft:#3D1F22;--shadow:none}
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--brand)}
+.app{max-width:560px;margin:0 auto;min-height:100vh;padding:0 16px 96px}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;align-items:center;gap:10px;padding:12px 0 10px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;color:var(--brand);letter-spacing:-.3px;flex:1}
+.logo svg{width:30px;height:30px}
+.pill{font-size:11px;font-weight:700;background:var(--sun);color:#2A1A2E;border-radius:99px;padding:2px 8px;letter-spacing:.3px}
+.icon-btn{border:0;background:var(--card);box-shadow:var(--shadow);border-radius:12px;width:42px;height:42px;display:grid;place-items:center;cursor:pointer}
+.alert-btn{white-space:nowrap;border:0;background:var(--danger);color:#fff;font-weight:700;border-radius:12px;padding:0 12px;height:42px;display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px}
+.alert-btn svg{width:18px;height:18px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+nav.tabs .wrap{display:flex;max-width:560px;width:100%}
+nav.tabs button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;color:var(--muted);padding:6px 0;cursor:pointer;border-radius:12px}
+nav.tabs button svg{width:24px;height:24px}
+nav.tabs button.on{color:var(--brand);font-weight:700;background:color-mix(in srgb,var(--brand) 10%,transparent)}
+h1{font-size:24px;margin:8px 0 6px;letter-spacing:-.4px}
+h2{font-size:18px;margin:22px 0 8px}
+h3{font-size:16px;margin:0 0 6px}
+p{margin:6px 0}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:12px 0;border:1px solid var(--line)}
+.hero{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border:0}
+.hero .muted{color:rgba(255,255,255,.85)}
+.big{font-size:44px;font-weight:800;line-height:1;letter-spacing:-1px}
+.row{display:flex;gap:10px;align-items:center}
+.row.wrap{flex-wrap:wrap}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--bg);border-radius:14px;padding:10px 12px}
+.stat b{display:block;font-size:20px}
+.stat span{font-size:12.5px;color:var(--muted)}
+.bar{height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--sun),var(--coral));border-radius:99px;transition:width .4s}
+.hero .bar{background:rgba(255,255,255,.25)}
+.hero .bar i{background:var(--sun)}
+.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:700;cursor:pointer;background:var(--brand);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;min-height:48px}
+.btn.block{width:100%}
+.btn.ghost{background:transparent;color:var(--brand);border:2px solid var(--brand)}
+.btn.soft{background:var(--sun-soft);color:var(--ink)}
+.btn.wa{background:#1F9D55;color:#fff}
+.btn.danger{background:var(--danger);color:#fff}
+.btn.sm{min-height:38px;padding:8px 12px;font-size:14px;border-radius:12px}
+.btn svg{width:20px;height:20px}
+label.f{display:block;font-size:13.5px;color:var(--muted);margin:10px 0 4px}
+input.i,select.i,textarea.i{width:100%;border:1.5px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;min-height:48px}
+textarea.i{min-height:84px;resize:vertical}
+input.i:focus,select.i:focus,textarea.i:focus{outline:none;border-color:var(--brand)}
+.seg{display:flex;background:var(--bg);border-radius:12px;padding:4px;gap:4px;border:1px solid var(--line)}
+.seg button{flex:1;border:0;background:none;padding:10px;border-radius:9px;cursor:pointer;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--card);color:var(--brand);box-shadow:var(--shadow)}
+ul.check{list-style:none;padding:0;margin:0}
+ul.check li{display:flex;gap:12px;align-items:flex-start;padding:11px 2px;border-bottom:1px solid var(--line)}
+ul.check li:last-child{border-bottom:0}
+.box{flex:0 0 26px;height:26px;border-radius:8px;border:2px solid var(--line);display:grid;place-items:center;background:var(--card);cursor:pointer;margin-top:-1px}
+.box.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.box svg{width:16px;height:16px}
+.li-text{flex:1}
+.li-text.done{color:var(--muted);text-decoration:line-through}
+.x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:2px 6px}
+.cpn{border-left:5px solid var(--line)}
+.cpn.done{border-left-color:var(--ok)}
+.cpn.soon{border-left-color:var(--sun)}
+.cpn.late{border-left-color:var(--coral)}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--bg);color:var(--muted)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.sun{background:var(--sun-soft);color:#8A5A00}
+.tag.late{background:var(--danger-soft);color:var(--danger)}
+details summary{cursor:pointer;font-weight:600;color:var(--brand);padding:6px 0;list-style:none}
+details summary::-webkit-details-marker{display:none}
+.danger-card{background:var(--danger-soft);border:2px solid var(--danger)}
+.danger-card h3{color:var(--danger)}
+.signs{margin:6px 0 0;padding-left:20px}
+.signs li{margin:6px 0;font-weight:600}
+.soon-card{background:var(--sun-soft);border:1px solid var(--sun)}
+.callbar{display:grid;gap:8px;margin:12px 0}
+.lock{position:relative}
+.lock-cover{background:linear-gradient(180deg,transparent,var(--bg) 40%);padding:16px;border-radius:var(--radius);text-align:center}
+.lock-box{background:var(--card);border:2px dashed var(--brand);border-radius:var(--radius);padding:18px;text-align:center}
+.lock-box svg{width:36px;height:36px;color:var(--brand)}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;z-index:20;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+.ct-btn{width:100%;min-height:120px;border-radius:24px;font-size:20px}
+table.t{width:100%;border-collapse:collapse;font-size:14.5px}
+table.t th,table.t td{text-align:left;padding:8px 4px;border-bottom:1px solid var(--line)}
+table.t th{color:var(--muted);font-weight:600;font-size:12.5px}
+.money-line{display:grid;grid-template-columns:1fr 1fr 28px;gap:8px;align-items:end;padding:10px 0;border-bottom:1px solid var(--line)}
+.money-line .lbl{grid-column:1 / -1;display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.money-line input{min-height:44px;padding:9px}
+.sub{font-size:12px;color:var(--muted);margin-bottom:3px}
+.ob{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:24px 0}
+.ob .logo{font-size:30px;justify-content:center;flex:none;margin-bottom:8px}
+.ob .logo svg{width:52px;height:52px}
+.center{text-align:center}
+.sheet{background:#fff;color:#1a1a1a}
+.sheet h1{color:#7A2E5C}
+.sheet table{width:100%;border-collapse:collapse;margin:8px 0}
+.sheet td{border:1px solid #ddd;padding:8px;vertical-align:top;font-size:14px}
+.sheet td:first-child{width:38%;color:#555;font-weight:600}
+.hidden{display:none!important}
+@media print{
+  body{background:#fff}
+  header.top,nav.tabs,.noprint,.toast{display:none!important}
+  .app{padding:0;max-width:none}
+  .card{box-shadow:none;border:0}
+}
+
+:root[data-theme="dark"]{--bg:#1C1320;--card:#291D2E;--ink:#F6EDF3;--muted:#C2B0C2;--line:#433446;--brand:#E58BBE;--brand-2:#F0A6CF;--sun:#F6B95A;--sun-soft:#3A2C1C;--ok:#6FD3A0;--ok-soft:#1E3529;--danger:#FF6B6B;--danger-soft:#3D1F22;--shadow:none}
+.hero{color:#fff}
+@media (prefers-color-scheme: dark){.hero{background:linear-gradient(135deg,#7A2E5C,#B4477F)}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<noscript>MamaPlan a besoin de JavaScript. / MamaPlan needs JavaScript.</noscript>
+<script>// MamaPlan : textes et contenus FR / EN.
+// Les signes d'alerte reprennent les fiches de conseil de l'OMS (PCPNC, Counselling for Maternal and Newborn Health Care)
+// et les recommandations postnatales OMS 2022. Ne pas les modifier sans source.
+const I18N = {
+  fr: {
+    appName: 'MamaPlan',
+    tagline: 'Prête pour le Jour J', dP: 'J', colon: ' :',
+    // navigation
+    tabHome: 'Accueil', tabCpn: 'Consultations', tabBudget: 'Budget', tabBag: 'Valise', tabPlan: 'Jour J',
+    alertBtn: 'Signes d\'alerte', alertShort: 'Alertes',
+    // onboarding
+    obTitle: 'Bienvenue dans MamaPlan',
+    obText: 'En quelques minutes, préparez tout pour le jour de l\'accouchement : consultations, budget, valise, transport et contacts d\'urgence.',
+    obPrivacy: 'Vos informations restent sur ce téléphone. Pas de compte, pas d\'envoi sur internet.',
+    obName: 'Votre prénom (facultatif)',
+    obDateMode: 'Je connais',
+    obDpa: 'ma date prévue d\'accouchement',
+    obDdr: 'la date du 1er jour de mes dernières règles',
+    obDpaLabel: 'Date prévue d\'accouchement',
+    obDdrLabel: '1er jour des dernières règles',
+    obDdrHelp: 'MamaPlan calcule une date approximative (+ 280 jours). La date donnée par votre sage-femme ou l\'échographie est plus fiable : vous pourrez la corriger.',
+    obStart: 'Commencer',
+    obLang: 'Langue',
+    obNeedDate: 'Indiquez une date pour continuer.',
+    // home
+    hello: 'Bonjour',
+    helloAnon: 'Bonjour',
+    week: 'Semaine',
+    weeksShort: 'sem.',
+    daysLeft: 'jours avant la date prévue',
+    dayLeft: 'jour avant la date prévue',
+    dueToday: 'C\'est la date prévue',
+    pastDue: 'jours après la date prévue : parlez-en avec votre sage-femme.',
+    dueOn: 'Date prévue',
+    readiness: 'Ma préparation',
+    readinessHelp: 'Étapes recommandées pour être prête le Jour J (cadre OMS / Jhpiego).',
+    nextSteps: 'À faire maintenant',
+    allDone: 'Bravo, toutes les étapes sont faites. Relisez votre plan avec votre famille.',
+    nextCpn: 'Prochaine consultation',
+    noNextCpn: 'Toutes les consultations prévues sont passées.',
+    disclaimer: 'MamaPlan aide à s\'organiser. Il ne remplace pas la sage-femme ou le médecin et ne pose aucun diagnostic. En cas de doute, appelez ou allez à la maternité.',
+    // readiness items
+    r_dpa: 'Connaître ma date prévue',
+    r_facility: 'Choisir ma maternité',
+    r_attendant: 'Noter le contact de ma sage-femme ou de mon médecin',
+    r_transport: 'Prévoir un transport, de jour comme de nuit',
+    r_money: 'Mettre de l\'argent de côté pour l\'accouchement',
+    r_donor: 'Identifier un donneur de sang',
+    r_companion: 'Choisir la personne qui m\'accompagne',
+    r_bag: 'Préparer la valise (80 % ou plus)',
+    r_papers: 'Rassembler les papiers',
+    r_signs: 'Lire les signes d\'alerte',
+    r_cpn: 'Être à jour de mes consultations',
+    // CPN
+    cpnTitle: 'Mes consultations prénatales',
+    cpnIntro: 'L\'OMS recommande au moins 8 contacts pendant la grossesse. Les dates sont calculées depuis votre date prévue : votre sage-femme peut proposer un autre rythme, suivez son calendrier.',
+    cpnContact: 'Contact',
+    cpnAround: 'vers',
+    cpnDone: 'Faite',
+    cpnMark: 'Marquer comme faite',
+    cpnUnmark: 'Annuler',
+    cpnLate: 'En retard ?',
+    cpnSoon: 'Bientôt',
+    cpnQuestions: 'Questions à poser',
+    cpnNote: 'Mes notes (date réelle, résultats, conseils reçus)',
+    cpnFirst: 'avant 12 semaines',
+    // Budget
+    budgetTitle: 'Mon budget naissance',
+    budgetIntro: 'Notez ce que la maternité et les achats vont coûter, ce que vous avez déjà réuni, et MamaPlan calcule ce qu\'il faut mettre de côté chaque semaine.',
+    budgetExample: 'Repère : l\'Hôpital Central de Yaoundé a annoncé en 2025 un forfait maternité de 90 000 F (consultations, 2 échographies, examens, accouchement). Demandez le tarif de votre maternité.',
+    bPost: 'Poste', bPlanned: 'Prévu', bPaid: 'Déjà payé ou réuni',
+    bTotal: 'Total prévu', bGathered: 'Déjà réuni', bLeft: 'Reste à trouver', bPerWeek: 'À mettre de côté par semaine',
+    bWeeksLeft: 'semaines avant la date prévue',
+    bAddLine: 'Ajouter un poste',
+    bContrib: 'Les proches qui participent',
+    bContribHelp: 'Mari, parents, sœurs, amies : notez ce que chacun a promis et cochez quand c\'est reçu.',
+    bName: 'Nom', bAmount: 'Montant promis', bReceived: 'Reçu',
+    bAddPerson: 'Ajouter une personne',
+    bShare: 'Envoyer le budget sur WhatsApp',
+    bReady: 'Le budget est couvert.',
+    bLines: ['Consultations et examens', 'Échographies', 'Accouchement (forfait maternité)', 'Médicaments et kit d\'accouchement', 'Transport', 'Valise de maman', 'Trousseau de bébé', 'Réserve pour imprévus'],
+    // Bag
+    bagTitle: 'Ma valise maternité',
+    bagIntro: 'Cochez au fur et à mesure. Demandez aussi à votre maternité sa propre liste : elle fournit parfois certains articles et en demande d\'autres.',
+    bagWhen: 'Conseil : avoir la valise prête vers 34 à 36 semaines.',
+    bagCats: { mom: 'Pour maman', baby: 'Pour bébé', papers: 'Papiers et argent', comp: 'Pour l\'accompagnante' },
+    bagAdd: 'Ajouter un article',
+    bagAddPh: 'Nouvel article',
+    bagShare: 'Envoyer ce qui manque sur WhatsApp',
+    bagMissing: 'Il manque encore',
+    bagComplete: 'La valise est complète.',
+    bagDelete: 'Supprimer',
+    bagItems: {
+      mom: ['Pagnes (3 ou 4)', 'Chemises de nuit qui s\'ouvrent devant (2)', 'Serviettes hygiéniques spéciales maternité (2 paquets)', 'Culottes en coton (5)', 'Soutiens-gorge d\'allaitement (2)', 'Sandales', 'Trousse de toilette : savon, brosse à dents, dentifrice', 'Serviette de bain', 'Alèse ou toile plastique', 'Bassine ou seau (si la maternité le demande)', 'Gobelet, assiette, cuillère, thermos', 'Bouteilles d\'eau et collation', 'Téléphone et chargeur', 'Vêtements pour la sortie'],
+      baby: ['Bodies ou brassières (6)', 'Pyjamas ou grenouillères (6)', 'Bonnets (2)', 'Chaussettes ou chaussons (3 paires)', 'Langes ou couvertures légères (3)', 'Couches nouveau-né (1 paquet)', 'Coton et savon doux pour bébé', 'Serviette de bébé', 'Tenue de sortie'],
+      papers: ['Carte d\'identité', 'Carnet de consultations prénatales', 'Résultats d\'examens et échographies', 'Carte de groupe sanguin', 'Carte d\'assurance ou de mutuelle', 'Liste des numéros importants', 'Argent de l\'accouchement (espèces ou Mobile Money)'],
+      comp: ['Vêtements de rechange', 'Couverture ou pagne pour la nuit', 'Repas et eau', 'Argent pour les petites dépenses']
+    },
+    // Plan
+    planTitle: 'Mon plan Jour J',
+    planIntro: 'Le jour où le travail commence, il n\'y a pas de temps pour chercher des numéros. Remplissez ce plan et envoyez-le à votre famille.',
+    pFacility: 'Ma maternité', pName: 'Nom', pAddr: 'Quartier, repère', pPhone: 'Téléphone',
+    pAttendant: 'Ma sage-femme ou mon médecin',
+    pTransport1: 'Transport n° 1 (joignable la nuit)', pTransport2: 'Transport n° 2 (si le 1er ne répond pas)',
+    pCompanion: 'La personne qui m\'accompagne',
+    pDonors: 'Donneurs de sang possibles',
+    pDonorsHelp: 'Une hémorragie peut demander une transfusion. Notez au moins une personne prête à donner son sang, et son groupe si vous le connaissez.',
+    pDonor: 'Donneur', pGroup: 'Groupe sanguin',
+    pMyGroup: 'Mon groupe sanguin',
+    pKids: 'Qui garde les enfants / la maison',
+    pMoney: 'Où est l\'argent de l\'accouchement',
+    pMoneyPh: 'Ex. : Mobile Money de mon mari, enveloppe dans l\'armoire',
+    pFamily: 'Contact d\'urgence dans la famille',
+    pWishes: 'Mes souhaits (facultatif)',
+    pWishesPh: 'Ex. : je souhaite que ma sœur reste avec moi, je veux allaiter dès la naissance…',
+    pUseful: 'Informations utiles pour l\'équipe (facultatif)',
+    pUsefulPh: 'Ex. : allergie, traitement en cours, ce que la sage-femme vous a demandé de signaler',
+    pUsefulNote: 'Ne notez que ce que vous voulez montrer. Ces informations restent sur votre téléphone.',
+    pSheet: 'Voir ma fiche à montrer / imprimer',
+    pShare: 'Envoyer mon plan sur WhatsApp',
+    call: 'Appeler',
+    // Alerts
+    alertTitle: 'Signes d\'alerte',
+    alertNow: 'Allez TOUT DE SUITE à la maternité, de jour comme de nuit, sans attendre, si :',
+    alertSoon: 'Allez en consultation le plus tôt possible (le jour même) si :',
+    alertLabour: 'Signes que le travail commence : allez à la maternité si :',
+    alertAfterMom: 'Après l\'accouchement, pour maman : allez TOUT DE SUITE à la maternité si :',
+    alertAfterMomSoon: 'Après l\'accouchement, consultez rapidement si :',
+    alertBaby: 'Pour le nouveau-né : allez TOUT DE SUITE consulter si :',
+    alertSegPreg: 'Grossesse', alertSegAfter: 'Après la naissance',
+    alertRead: 'J\'ai lu ces signes',
+    alertCallFacility: 'Appeler la maternité', alertCallTransport: 'Appeler le transport', alertCallFamily: 'Appeler la famille',
+    alertNoPhone: 'Ajoutez les numéros dans « Jour J » pour appeler en un geste.',
+    alertSource: 'Source : fiches de conseil de l\'Organisation mondiale de la santé (OMS) pour la grossesse, l\'accouchement et le post-partum ; recommandations OMS sur les soins postnatals (2022). En cas de doute, n\'attendez pas.',
+    signsNow: ['Saignement par le vagin', 'Convulsions (crise) ou perte de connaissance', 'Maux de tête très forts avec vision trouble', 'Fièvre et trop faible pour se lever', 'Douleur très forte au ventre', 'Respiration rapide ou difficile', 'Le bébé bouge beaucoup moins, ou ne bouge plus'],
+    signsSoon: ['Fièvre', 'Douleurs au ventre', 'Vous vous sentez malade', 'Gonflement des doigts, du visage ou des jambes'],
+    signsLabour: ['Contractions douloureuses toutes les 20 minutes ou moins', 'Perte des eaux (liquide qui coule)', 'Glaires collantes avec du sang'],
+    signsAfterMom: ['Saignement abondant (serviette trempée très vite, ou saignement qui augmente)', 'Convulsions', 'Respiration rapide ou difficile', 'Fièvre et trop faible pour se lever', 'Maux de tête très forts avec vision trouble', 'Douleur dans la poitrine', 'Douleur, rougeur ou gonflement d\'un mollet'],
+    signsAfterMomSoon: ['Pertes qui sentent mauvais', 'Douleur forte au ventre ou à la cicatrice', 'Sein rouge, chaud et douloureux', 'Difficulté à uriner ou fuites', 'Tristesse profonde, envie de pleurer tout le temps, idées de se faire du mal : parlez-en tout de suite à un soignant ou à un proche'],
+    signsBaby: ['Ne tète pas bien ou refuse le sein', 'Convulsions', 'Respiration rapide (plus de 60 par minute) ou difficile', 'La poitrine se creuse quand il respire', 'Ne bouge pas, ou seulement quand on le stimule', 'Fièvre (plus de 37,5 °C) ou corps froid (moins de 35,5 °C)', 'Peau jaune dans les 24 premières heures, ou paumes et plantes des pieds jaunes', 'Nombril rouge ou qui coule (pus)'],
+    // Contractions
+    ctTitle: 'Relevé des contractions',
+    ctIntro: 'Appuyez au début et à la fin de chaque contraction. Montrez ce relevé à la sage-femme et suivez ses consignes pour savoir quand venir.',
+    ctWarn: 'Si vous perdez les eaux, si vous saignez ou si le bébé bouge moins : allez à la maternité sans attendre.',
+    ctStart: 'Début de contraction', ctStop: 'Fin de contraction',
+    ctLastHour: 'Dernière heure', ctCount: 'contractions', ctAvgInt: 'écart moyen', ctAvgDur: 'durée moyenne',
+    ctTime: 'Heure', ctDur: 'Durée', ctInt: 'Écart',
+    ctClear: 'Effacer le relevé', ctShare: 'Envoyer le relevé',
+    ctEmpty: 'Aucune contraction notée.',
+    // Sheet
+    shTitle: 'Mon plan de naissance',
+    shFor: 'Fiche de',
+    shPrint: 'Imprimer ou enregistrer en PDF',
+    shBack: 'Retour',
+    shGenerated: 'Préparée avec MamaPlan. Fiche d\'organisation, pas un document médical.',
+    // Settings
+    menu: 'Plus',
+    setTitle: 'Réglages',
+    setLang: 'Langue / Language',
+    setName: 'Prénom', setDpa: 'Date prévue d\'accouchement',
+    setSave: 'Enregistrer',
+    setBackup: 'Sauvegarder mes données (fichier)', setRestore: 'Restaurer depuis un fichier',
+    setBackupHelp: 'Gardez ce fichier si vous changez de téléphone. Il contient vos informations : ne le partagez pas.',
+    setErase: 'Tout effacer sur ce téléphone', setEraseConfirm: 'Effacer toutes les informations MamaPlan de ce téléphone ? Cette action est définitive.',
+    setRestored: 'Données restaurées.', setBadFile: 'Ce fichier n\'est pas une sauvegarde MamaPlan.',
+    setInstall: 'Installer sur l\'écran d\'accueil',
+    setInstallHelp: 'Android (Chrome) : menu ⋮ puis « Ajouter à l\'écran d\'accueil ». iPhone (Safari) : bouton Partager puis « Sur l\'écran d\'accueil ». Ensuite, MamaPlan s\'ouvre même sans connexion.',
+    setAbout: 'À propos',
+    setAboutText: 'MamaPlan est un outil d\'organisation édité par Lord Samsin Studio. Aucune donnée n\'est collectée : tout reste dans ce navigateur. Effacer les données du navigateur efface aussi MamaPlan.',
+    saved: 'Enregistré',
+    // Premium
+    lockTitle: 'Disponible avec MamaPlan Complet',
+    lockText: 'Le budget, le plan Jour J complet, la fiche à imprimer, le partage WhatsApp, le relevé des contractions et la sauvegarde sont inclus dans MamaPlan Complet.',
+    lockFree: 'Toujours gratuit : signes d\'alerte, numéros d\'urgence, consultations et valise.',
+    lockHave: 'J\'ai un code',
+    lockCodePh: 'MP-XXXX-XXXX',
+    lockActivate: 'Activer',
+    lockOk: 'MamaPlan Complet est activé. Merci !',
+    lockBad: 'Code non reconnu. Vérifiez les lettres et les chiffres.',
+    lockBuy: 'Obtenir mon code',
+    lockActive: 'MamaPlan Complet activé',
+    premium: 'Complet',
+    // generic
+    add: 'Ajouter', remove: 'Retirer', close: 'Fermer', yes: 'Oui', no: 'Non', fcfa: 'F',
+    shareIntro: 'Préparé avec MamaPlan',
+    cpnQ: [
+      ['Pouvez-vous confirmer ma date prévue d\'accouchement ?', 'Quels examens dois-je faire et quand ?', 'Quel est mon groupe sanguin ?', 'Que me conseillez-vous pour l\'alimentation, le fer et l\'acide folique ?', 'Comment vous joindre en cas d\'urgence ?'],
+      ['Quels sont les résultats de mes examens ?', 'Comment me protéger du paludisme ? Le traitement préventif me concerne-t-il ?', 'Suis-je à jour pour le vaccin antitétanique ?', 'Quand faire l\'échographie ?'],
+      ['Ma tension et mon poids sont-ils normaux ?', 'Dois-je continuer le fer ?', 'Quels signes doivent me faire venir tout de suite ?'],
+      ['Dans quelle maternité me conseillez-vous d\'accoucher ?', 'Combien coûte l\'accouchement et que comprend le forfait ?', 'Quelle liste de valise la maternité demande-t-elle ?'],
+      ['Comment est placé le bébé ?', 'À quel moment dois-je venir quand le travail commence ?', 'Que faire si je perds les eaux ?'],
+      ['Faut-il prévoir un donneur de sang ?', 'Quels papiers dois-je apporter le jour J ?', 'Qui puis-je appeler la nuit ?'],
+      ['Comment se passe la première tétée ?', 'Que se passe-t-il si je dépasse la date prévue ?', 'Quels soins pour le bébé juste après la naissance ?'],
+      ['Que fait-on si le travail ne commence pas ?', 'Quand dois-je revenir ?', 'Quand aura lieu la consultation après l\'accouchement ?']
+    ]
+  },
+  en: {
+    appName: 'MamaPlan',
+    tagline: 'Ready for the big day', dP: 'D', colon: ':',
+    tabHome: 'Home', tabCpn: 'Check-ups', tabBudget: 'Budget', tabBag: 'Bag', tabPlan: 'D-Day',
+    alertBtn: 'Danger signs', alertShort: 'Alerts',
+    obTitle: 'Welcome to MamaPlan',
+    obText: 'In a few minutes, get everything ready for the day of birth: check-ups, budget, hospital bag, transport and emergency contacts.',
+    obPrivacy: 'Your information stays on this phone. No account, nothing sent online.',
+    obName: 'Your first name (optional)',
+    obDateMode: 'I know',
+    obDpa: 'my due date',
+    obDdr: 'the first day of my last period',
+    obDpaLabel: 'Due date',
+    obDdrLabel: 'First day of last period',
+    obDdrHelp: 'MamaPlan estimates a date (+ 280 days). The date given by your midwife or the scan is more reliable: you can change it later.',
+    obStart: 'Start',
+    obLang: 'Language',
+    obNeedDate: 'Enter a date to continue.',
+    hello: 'Hello', helloAnon: 'Hello',
+    week: 'Week', weeksShort: 'wk',
+    daysLeft: 'days to your due date', dayLeft: 'day to your due date', dueToday: 'Today is your due date',
+    pastDue: 'days past your due date: talk to your midwife.',
+    dueOn: 'Due date',
+    readiness: 'My readiness',
+    readinessHelp: 'Recommended steps to be ready on the day (WHO / Jhpiego framework).',
+    nextSteps: 'To do now',
+    allDone: 'Well done, every step is complete. Go over your plan with your family.',
+    nextCpn: 'Next check-up', noNextCpn: 'All planned check-ups are behind you.',
+    disclaimer: 'MamaPlan helps you get organised. It does not replace your midwife or doctor and does not diagnose anything. If in doubt, call or go to the maternity unit.',
+    r_dpa: 'Know my due date', r_facility: 'Choose my maternity unit', r_attendant: 'Save my midwife or doctor\'s contact',
+    r_transport: 'Plan transport, day and night', r_money: 'Save money for the birth', r_donor: 'Find a blood donor',
+    r_companion: 'Choose who comes with me', r_bag: 'Pack the bag (80% or more)', r_papers: 'Gather my documents',
+    r_signs: 'Read the danger signs', r_cpn: 'Be up to date with check-ups',
+    cpnTitle: 'My antenatal check-ups',
+    cpnIntro: 'WHO recommends at least 8 contacts during pregnancy. Dates are worked out from your due date: your midwife may suggest another schedule, follow hers.',
+    cpnContact: 'Contact', cpnAround: 'around', cpnDone: 'Done', cpnMark: 'Mark as done', cpnUnmark: 'Undo',
+    cpnLate: 'Overdue?', cpnSoon: 'Soon', cpnQuestions: 'Questions to ask', cpnNote: 'My notes (actual date, results, advice)', cpnFirst: 'before 12 weeks',
+    budgetTitle: 'My birth budget',
+    budgetIntro: 'Write down what the maternity unit and purchases will cost and what you have already gathered. MamaPlan works out how much to put aside each week.',
+    budgetExample: 'Benchmark: in 2025 Yaoundé Central Hospital announced a 90,000 F maternity package (check-ups, 2 scans, tests, birth). Ask your maternity unit for its price.',
+    bPost: 'Item', bPlanned: 'Planned', bPaid: 'Already paid or saved',
+    bTotal: 'Total planned', bGathered: 'Already gathered', bLeft: 'Still needed', bPerWeek: 'To put aside each week',
+    bWeeksLeft: 'weeks to your due date', bAddLine: 'Add an item',
+    bContrib: 'Family members who help', bContribHelp: 'Husband, parents, sisters, friends: note what each promised and tick when received.',
+    bName: 'Name', bAmount: 'Promised', bReceived: 'Received', bAddPerson: 'Add a person',
+    bShare: 'Send the budget on WhatsApp', bReady: 'The budget is covered.',
+    bLines: ['Check-ups and tests', 'Scans', 'Birth (maternity package)', 'Medicines and delivery kit', 'Transport', 'Mum\'s bag', 'Baby\'s clothes and items', 'Emergency reserve'],
+    bagTitle: 'My hospital bag',
+    bagIntro: 'Tick items as you go. Also ask your maternity unit for its own list: it may provide some items and ask for others.',
+    bagWhen: 'Tip: have the bag ready by 34 to 36 weeks.',
+    bagCats: { mom: 'For mum', baby: 'For baby', papers: 'Documents and money', comp: 'For my companion' },
+    bagAdd: 'Add an item', bagAddPh: 'New item', bagShare: 'Send what is missing on WhatsApp',
+    bagMissing: 'Still missing', bagComplete: 'The bag is complete.', bagDelete: 'Delete',
+    bagItems: {
+      mom: ['Wrappers (3 or 4)', 'Front-opening nightdresses (2)', 'Maternity pads (2 packs)', 'Cotton underwear (5)', 'Nursing bras (2)', 'Sandals', 'Toiletries: soap, toothbrush, toothpaste', 'Bath towel', 'Plastic sheet or mattress protector', 'Basin or bucket (if the unit asks)', 'Cup, plate, spoon, flask', 'Water and snacks', 'Phone and charger', 'Clothes for going home'],
+      baby: ['Bodysuits or vests (6)', 'Sleepsuits (6)', 'Hats (2)', 'Socks or booties (3 pairs)', 'Light blankets or wraps (3)', 'Newborn nappies (1 pack)', 'Cotton wool and mild baby soap', 'Baby towel', 'Going-home outfit'],
+      papers: ['ID card', 'Antenatal card / booklet', 'Test results and scans', 'Blood group card', 'Insurance or health-plan card', 'List of important numbers', 'Money for the birth (cash or Mobile Money)'],
+      comp: ['Change of clothes', 'Blanket or wrapper for the night', 'Food and water', 'Money for small expenses']
+    },
+    planTitle: 'My D-Day plan',
+    planIntro: 'When labour starts there is no time to look for numbers. Fill in this plan and send it to your family.',
+    pFacility: 'My maternity unit', pName: 'Name', pAddr: 'Area, landmark', pPhone: 'Phone',
+    pAttendant: 'My midwife or doctor',
+    pTransport1: 'Transport no. 1 (reachable at night)', pTransport2: 'Transport no. 2 (if no. 1 does not answer)',
+    pCompanion: 'The person who comes with me',
+    pDonors: 'Possible blood donors',
+    pDonorsHelp: 'Heavy bleeding may need a transfusion. Note at least one person ready to give blood, and their blood group if known.',
+    pDonor: 'Donor', pGroup: 'Blood group', pMyGroup: 'My blood group',
+    pKids: 'Who looks after the children / home', pMoney: 'Where the birth money is', pMoneyPh: 'E.g. my husband\'s Mobile Money, envelope in the wardrobe',
+    pFamily: 'Family emergency contact', pWishes: 'My wishes (optional)', pWishesPh: 'E.g. I would like my sister to stay with me, I want to breastfeed right after birth…',
+    pUseful: 'Useful information for the team (optional)', pUsefulPh: 'E.g. allergy, current treatment, what your midwife asked you to mention',
+    pUsefulNote: 'Only write what you want to show. This stays on your phone.',
+    pSheet: 'See my sheet to show / print', pShare: 'Send my plan on WhatsApp', call: 'Call',
+    alertTitle: 'Danger signs',
+    alertNow: 'Go to the maternity unit IMMEDIATELY, day or night, do not wait, if:',
+    alertSoon: 'Go for a check-up as soon as possible (the same day) if:',
+    alertLabour: 'Signs that labour is starting: go to the maternity unit if:',
+    alertAfterMom: 'After the birth, for mum: go IMMEDIATELY if:',
+    alertAfterMomSoon: 'After the birth, get checked soon if:',
+    alertBaby: 'For the newborn: go IMMEDIATELY if:',
+    alertSegPreg: 'Pregnancy', alertSegAfter: 'After birth',
+    alertRead: 'I have read these signs',
+    alertCallFacility: 'Call the maternity unit', alertCallTransport: 'Call transport', alertCallFamily: 'Call family',
+    alertNoPhone: 'Add the numbers in “D-Day” to call in one tap.',
+    alertSource: 'Source: World Health Organization (WHO) counselling sheets for pregnancy, childbirth and postpartum care; WHO recommendations on postnatal care (2022). If in doubt, do not wait.',
+    signsNow: ['Bleeding from the vagina', 'Convulsions (fits) or fainting', 'Severe headache with blurred vision', 'Fever and too weak to get out of bed', 'Severe pain in the belly', 'Fast or difficult breathing', 'The baby moves much less, or stops moving'],
+    signsSoon: ['Fever', 'Belly pain', 'Feeling ill', 'Swelling of fingers, face or legs'],
+    signsLabour: ['Painful contractions every 20 minutes or less', 'Waters breaking (fluid leaking)', 'Sticky discharge with blood'],
+    signsAfterMom: ['Heavy bleeding (pad soaked very quickly, or bleeding getting heavier)', 'Convulsions', 'Fast or difficult breathing', 'Fever and too weak to get out of bed', 'Severe headache with blurred vision', 'Chest pain', 'Pain, redness or swelling in one calf'],
+    signsAfterMomSoon: ['Foul-smelling discharge', 'Strong pain in the belly or the scar', 'Red, hot, painful breast', 'Difficulty passing urine, or leaking', 'Deep sadness, crying all the time, thoughts of harming yourself: tell a health worker or someone close right away'],
+    signsBaby: ['Not feeding well or refusing the breast', 'Convulsions', 'Fast breathing (more than 60 per minute) or difficult breathing', 'Chest pulls in when breathing', 'Does not move, or only when stimulated', 'Fever (over 37.5 °C) or cold body (under 35.5 °C)', 'Yellow skin in the first 24 hours, or yellow palms and soles', 'Red or oozing umbilical stump (pus)'],
+    ctTitle: 'Contraction log',
+    ctIntro: 'Tap at the start and end of each contraction. Show this log to your midwife and follow her advice on when to come in.',
+    ctWarn: 'If your waters break, you bleed or the baby moves less: go to the maternity unit without waiting.',
+    ctStart: 'Contraction starts', ctStop: 'Contraction ends',
+    ctLastHour: 'Last hour', ctCount: 'contractions', ctAvgInt: 'average gap', ctAvgDur: 'average length',
+    ctTime: 'Time', ctDur: 'Length', ctInt: 'Gap', ctClear: 'Clear the log', ctShare: 'Send the log', ctEmpty: 'No contractions logged.',
+    shTitle: 'My birth plan', shFor: 'Sheet for', shPrint: 'Print or save as PDF', shBack: 'Back',
+    shGenerated: 'Prepared with MamaPlan. An organisation sheet, not a medical document.',
+    menu: 'More', setTitle: 'Settings', setLang: 'Langue / Language', setName: 'First name', setDpa: 'Due date', setSave: 'Save',
+    setBackup: 'Back up my data (file)', setRestore: 'Restore from a file',
+    setBackupHelp: 'Keep this file if you change phones. It contains your information: do not share it.',
+    setErase: 'Erase everything on this phone', setEraseConfirm: 'Erase all MamaPlan information from this phone? This cannot be undone.',
+    setRestored: 'Data restored.', setBadFile: 'This file is not a MamaPlan backup.',
+    setInstall: 'Install on the home screen',
+    setInstallHelp: 'Android (Chrome): menu ⋮ then “Add to Home screen”. iPhone (Safari): Share button then “Add to Home Screen”. MamaPlan then opens even offline.',
+    setAbout: 'About',
+    setAboutText: 'MamaPlan is an organisation tool published by Lord Samsin Studio. No data is collected: everything stays in this browser. Clearing browser data also erases MamaPlan.',
+    saved: 'Saved',
+    lockTitle: 'Included in MamaPlan Complete',
+    lockText: 'The budget, full D-Day plan, printable sheet, WhatsApp sharing, contraction log and backup are included in MamaPlan Complete.',
+    lockFree: 'Always free: danger signs, emergency numbers, check-ups and hospital bag.',
+    lockHave: 'I have a code', lockCodePh: 'MP-XXXX-XXXX', lockActivate: 'Activate',
+    lockOk: 'MamaPlan Complete is active. Thank you!', lockBad: 'Code not recognised. Check the letters and numbers.',
+    lockBuy: 'Get my code', lockActive: 'MamaPlan Complete active', premium: 'Complete',
+    add: 'Add', remove: 'Remove', close: 'Close', yes: 'Yes', no: 'No', fcfa: 'F',
+    shareIntro: 'Prepared with MamaPlan',
+    cpnQ: [
+      ['Can you confirm my due date?', 'Which tests do I need and when?', 'What is my blood group?', 'What do you advise for food, iron and folic acid?', 'How do I reach you in an emergency?'],
+      ['What are my test results?', 'How do I protect myself from malaria? Is preventive treatment for me?', 'Am I up to date with the tetanus vaccine?', 'When should I have the scan?'],
+      ['Are my blood pressure and weight normal?', 'Should I keep taking iron?', 'Which signs mean I should come straight away?'],
+      ['Which maternity unit do you advise?', 'How much does the birth cost and what does the package include?', 'What hospital bag list does the unit ask for?'],
+      ['How is the baby lying?', 'When should I come in once labour starts?', 'What do I do if my waters break?'],
+      ['Should I arrange a blood donor?', 'Which documents should I bring on the day?', 'Who can I call at night?'],
+      ['How does the first feed go?', 'What happens if I go past my due date?', 'What care does the baby get right after birth?'],
+      ['What happens if labour does not start?', 'When should I come back?', 'When is the check-up after the birth?']
+    ]
+  }
+};
+</script>
+<script>// MamaPlan : application hors ligne, données stockées sur l'appareil uniquement (localStorage).
+(function () {
+  'use strict';
+  const KEY = 'mamaplan.v1';
+  const BUY_URL = 'https://wpmlxdqd.mychariow.market';      // à remplacer par le lien du produit Chariow
+  const BUY_WA = '237679092458';                             // WhatsApp de vente
+  const CPN_WEEKS = [12, 20, 26, 30, 34, 36, 38, 40];        // OMS 2016 : 8 contacts
+  const DAY = 86400000;
+
+  // ---------- codes d'activation (même algorithme que tools/codes.py) ----------
+  const ALPH = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  const SALT = 'mamaplan-lss-2026';
+  function fnv(s) { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; }
+  function checkOf(body) { let h = fnv(SALT + body); let c = ''; for (let i = 0; i < 3; i++) { c += ALPH[h % 31]; h = Math.floor(h / 31); } return c; }
+  function normCode(raw) { let s = String(raw || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); if (s.startsWith('MP')) s = s.slice(2); return s; }
+  function validCode(raw) { const s = normCode(raw); if (s.length !== 8) return false; for (const ch of s) if (!ALPH.includes(ch)) return false; return checkOf(s.slice(0, 5)) === s.slice(5); }
+
+  // ---------- état ----------
+  function blankState(lang) {
+    const bag = {}; for (const c of ['mom', 'baby', 'papers', 'comp']) bag[c] = I18N.fr.bagItems[c].map((_, i) => ({ k: c + '.' + i, ok: false }));
+    return {
+      v: 1, lang: lang || 'fr', name: '', dpa: '', unlocked: false, code: '', signsRead: false, created: Date.now(),
+      cpn: {}, budget: { lines: I18N.fr.bLines.map((_, i) => ({ k: i, planned: 0, paid: 0 })), people: [] },
+      bag, plan: { facility: {}, attendant: {}, t1: {}, t2: {}, companion: {}, donors: [{}, {}], myGroup: '', kids: {}, money: '', family: {}, wishes: '', useful: '' },
+      contractions: []
+    };
+  }
+  let S;
+  function load() { try { const raw = localStorage.getItem(KEY); if (raw) { const o = JSON.parse(raw); if (o && o.v === 1) return Object.assign(blankState(o.lang), o); } } catch (e) { } return null; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('⚠️ Stockage indisponible / storage unavailable'); } }
+  S = load();
+  let view = 'home', seg = 'preg', prevView = 'home';
+
+  // ---------- utilitaires ----------
+  const T = () => I18N[(S && S.lang) || navLang()];
+  function navLang() { return (navigator.language || 'fr').toLowerCase().startsWith('en') ? 'en' : 'fr'; }
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const parseD = s => { if (!s) return null; const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const isoD = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const fmtD = d => d.toLocaleDateString(S.lang === 'en' ? 'en-GB' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const fmtShort = d => d.toLocaleDateString(S.lang === 'en' ? 'en-GB' : 'fr-FR', { day: 'numeric', month: 'short' });
+  const money = n => Math.round(n || 0).toLocaleString('fr-FR').replace(/ | /g, ' ') + ' ' + T().fcfa;
+  const num = v => { const n = parseFloat(String(v).replace(/[^0-9.]/g, '')); return isNaN(n) ? 0 : n; };
+  const telHref = p => 'tel:' + String(p || '').replace(/[^0-9+]/g, '');
+  function daysLeft() { const d = parseD(S.dpa); return d ? Math.round((d - today()) / DAY) : null; }
+  function gaWeek() { const dl = daysLeft(); return dl == null ? null : Math.max(0, Math.floor((280 - dl) / 7)); }
+  function cpnDate(i) { return new Date(parseD(S.dpa).getTime() - (40 - CPN_WEEKS[i]) * 7 * DAY); }
+  function bagLabel(c, it) { return it.t != null ? it.t : (T().bagItems[c][Number(it.k.split('.')[1])] || ''); }
+  function lineLabel(l) { return l.t != null ? l.t : T().bLines[l.k]; }
+  let toastT; function toast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2200); }
+  function share(text) { const url = 'https://wa.me/?text=' + encodeURIComponent(text); window.open(url, '_blank', 'noopener'); }
+
+  // ---------- calculs ----------
+  function bagStats(cats) { let n = 0, ok = 0; for (const c of cats) for (const it of S.bag[c]) { n++; if (it.ok) ok++; } return { n, ok, pct: n ? ok / n : 0 }; }
+  function budgetStats() {
+    const planned = S.budget.lines.reduce((a, l) => a + num(l.planned), 0);
+    const paid = S.budget.lines.reduce((a, l) => a + num(l.paid), 0);
+    const recv = S.budget.people.reduce((a, p) => a + (p.received ? num(p.amount) : 0), 0);
+    const promised = S.budget.people.reduce((a, p) => a + (!p.received ? num(p.amount) : 0), 0);
+    const gathered = paid + recv; const left = Math.max(0, planned - gathered - promised);
+    const dl = daysLeft(); const weeks = dl == null ? 0 : Math.max(1, Math.ceil(dl / 7));
+    return { planned, gathered, promised, left, weeks, perWeek: left / weeks };
+  }
+  const has = o => o && (o.name || o.phone);
+  function readiness() {
+    const p = S.plan; const b = budgetStats(); const td = today();
+    const overdue = CPN_WEEKS.some((w, i) => !(S.cpn[i] && S.cpn[i].done) && S.dpa && (td - cpnDate(i)) / DAY > 14);
+    const items = [
+      ['r_dpa', !!S.dpa, 'settings'], ['r_facility', !!(p.facility.name), 'plan'], ['r_attendant', has(p.attendant), 'plan'],
+      ['r_transport', !!(p.t1.phone), 'plan'], ['r_money', b.planned > 0 && b.left === 0, 'budget'],
+      ['r_donor', p.donors.some(d => d.name || d.phone), 'plan'], ['r_companion', has(p.companion), 'plan'],
+      ['r_bag', bagStats(['mom', 'baby']).pct >= 0.8, 'bag'], ['r_papers', bagStats(['papers']).pct >= 1, 'bag'],
+      ['r_signs', !!S.signsRead, 'alerts'], ['r_cpn', !!S.dpa && !overdue, 'cpn']
+    ];
+    return { items, done: items.filter(i => i[1]).length, total: items.length };
+  }
+
+  // ---------- icônes ----------
+  const I = {
+    logo: '<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#7A2E5C"/><path d="M15 31c0-6 4-10 9-10s9 4 9 10" fill="none" stroke="#F3A73B" stroke-width="3.2" stroke-linecap="round"/><circle cx="24" cy="15.5" r="4.2" fill="#FFF8F1"/><path d="M19 33.5h10" stroke="#FFF8F1" stroke-width="3.2" stroke-linecap="round"/></svg>',
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+    cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+    coin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v5c0 1.7 3.1 3 7 3s7-1.3 7-3V7M5 12v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></svg>',
+    bag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg>',
+    star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
+    alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></svg>',
+    gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+    tick: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
+    wa: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7a11.4 11.4 0 0 1-4.4-3.9c-.3-.4-1-1.4-1-2.7s.7-1.9.9-2.2a1 1 0 0 1 .7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6a8.5 8.5 0 0 0 1.6 2 7.8 7.8 0 0 0 2.3 1.4c.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    print: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><rect x="6" y="14" width="12" height="7"/></svg>',
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>'
+  };
+
+  // ---------- vues ----------
+  function onboarding() {
+    const t = I18N[navLangSel];
+    return `<div class="ob">
+      <div class="logo">${I.logo}<span>MamaPlan</span></div>
+      <p class="center muted" style="margin-top:0">${esc(t.tagline)}</p>
+      <div class="card">
+        <div class="seg" role="tablist" aria-label="${esc(t.obLang)}">
+          <button data-a="ob-lang" data-v="fr" class="${navLangSel === 'fr' ? 'on' : ''}">Français</button>
+          <button data-a="ob-lang" data-v="en" class="${navLangSel === 'en' ? 'on' : ''}">English</button>
+        </div>
+        <h1 style="margin-top:16px">${esc(t.obTitle)}</h1>
+        <p>${esc(t.obText)}</p>
+        <p class="small muted">🔒 ${esc(t.obPrivacy)}</p>
+        <label class="f" for="ob-name">${esc(t.obName)}</label>
+        <input class="i" id="ob-name" autocomplete="given-name" maxlength="40">
+        <label class="f">${esc(t.obDateMode)}</label>
+        <div class="seg">
+          <button data-a="ob-mode" data-v="dpa" class="${obMode === 'dpa' ? 'on' : ''}">${esc(t.obDpa)}</button>
+          <button data-a="ob-mode" data-v="ddr" class="${obMode === 'ddr' ? 'on' : ''}">${esc(t.obDdr)}</button>
+        </div>
+        <label class="f" for="ob-date">${esc(obMode === 'dpa' ? t.obDpaLabel : t.obDdrLabel)}</label>
+        <input class="i" type="date" id="ob-date">
+        ${obMode === 'ddr' ? `<p class="small muted">${esc(t.obDdrHelp)}</p>` : ''}
+        <p class="small" id="ob-err" style="color:var(--danger)"></p>
+        <button class="btn block" data-a="ob-start">${esc(t.obStart)}</button>
+      </div>
+      <p class="small muted center">${esc(t.disclaimer)}</p>
+    </div>`;
+  }
+  let navLangSel = navLang(), obMode = 'dpa';
+
+  function header() {
+    const t = T();
+    return `<header class="top">
+      <div class="logo">${I.logo}<span>MamaPlan</span></div>
+      <button class="alert-btn" data-go="alerts" aria-label="${esc(t.alertBtn)}">${I.alert}<span>${esc(t.alertShort)}</span></button>
+      <button class="icon-btn" data-go="settings" aria-label="${esc(t.setTitle)}">${I.gear}</button>
+    </header>`;
+  }
+  function tabs() {
+    const t = T(); const items = [['home', I.home, t.tabHome], ['cpn', I.cal, t.tabCpn], ['budget', I.coin, t.tabBudget], ['bag', I.bag, t.tabBag], ['plan', I.star, t.tabPlan]];
+    return `<nav class="tabs"><div class="wrap">${items.map(([v, ic, l]) => `<button data-go="${v}" class="${view === v ? 'on' : ''}" aria-current="${view === v}">${ic}<span>${esc(l)}</span></button>`).join('')}</div></nav>`;
+  }
+
+  function vHome() {
+    const t = T(); const dl = daysLeft(); const wk = gaWeek(); const r = readiness();
+    let count;
+    if (dl > 1) count = `<div class="big">${t.dP}-${dl}</div><div class="muted">${dl} ${esc(t.daysLeft)}</div>`;
+    else if (dl === 1) count = `<div class="big">${t.dP}-1</div><div class="muted">1 ${esc(t.dayLeft)}</div>`;
+    else if (dl === 0) count = `<div class="big">${t.dP}</div><div class="muted">${esc(t.dueToday)}</div>`;
+    else count = `<div class="big">${t.dP}+${-dl}</div><div class="muted">${-dl} ${esc(t.pastDue)}</div>`;
+    const next = CPN_WEEKS.map((w, i) => ({ i, d: cpnDate(i) })).find(c => !(S.cpn[c.i] && S.cpn[c.i].done) && c.d >= new Date(today() - 14 * DAY));
+    const todo = r.items.filter(i => !i[1]).slice(0, 4);
+    return `<h1>${esc(S.name ? t.hello + ' ' + S.name : t.helloAnon)} 👋</h1>
+    <div class="card hero">
+      <div class="spread"><div>${count}</div><div style="text-align:right"><div class="muted small">${esc(t.week)}</div><div style="font-size:30px;font-weight:800">${wk}</div></div></div>
+      <p class="muted small" style="margin-top:10px">${esc(t.dueOn)}${t.colon} ${fmtD(parseD(S.dpa))}</p>
+    </div>
+    <div class="card">
+      <div class="spread"><h3>${esc(t.readiness)}</h3><b>${r.done}/${r.total}</b></div>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${r.total}" aria-valuenow="${r.done}"><i style="width:${Math.round(100 * r.done / r.total)}%"></i></div>
+      <p class="small muted">${esc(t.readinessHelp)}</p>
+      <h3 style="margin-top:12px">${esc(t.nextSteps)}</h3>
+      ${todo.length ? `<ul class="check">${todo.map(i => `<li data-go="${i[2]}" style="cursor:pointer"><span class="box"></span><span class="li-text">${esc(t[i[0]])}</span><span class="muted">›</span></li>`).join('')}</ul>` : `<p>${esc(t.allDone)}</p>`}
+    </div>
+    <div class="card" data-go="cpn" style="cursor:pointer">
+      <h3>${esc(t.nextCpn)}</h3>
+      ${next ? `<p><b>${esc(t.cpnContact)} ${next.i + 1}</b> · ${esc(t.cpnAround)} ${fmtD(next.d)} (${CPN_WEEKS[next.i]} ${esc(t.weeksShort)})</p>` : `<p>${esc(t.noNextCpn)}</p>`}
+    </div>
+    <div class="grid2">
+      <button class="btn soft" data-go="contractions">${I.clock}${esc(t.ctTitle)}</button>
+      <button class="btn soft" data-go="sheet">${I.doc}${esc(t.shTitle)}</button>
+    </div>
+    <p class="small muted" style="margin-top:18px">${esc(t.disclaimer)}</p>`;
+  }
+
+  function vCpn() {
+    const t = T(); const td = today();
+    return `<h1>${esc(t.cpnTitle)}</h1><p class="muted small">${esc(t.cpnIntro)}</p>
+    ${CPN_WEEKS.map((w, i) => {
+      const d = cpnDate(i); const st = S.cpn[i] || {}; const diff = (d - td) / DAY;
+      let cls = '', tag = '';
+      if (st.done) { cls = 'done'; tag = `<span class="tag ok">✓ ${esc(t.cpnDone)}</span>`; }
+      else if (diff < -14) { cls = 'late'; tag = `<span class="tag late">${esc(t.cpnLate)}</span>`; }
+      else if (diff <= 14) { cls = 'soon'; tag = `<span class="tag sun">${esc(t.cpnSoon)}</span>`; }
+      return `<div class="card cpn ${cls}">
+        <div class="spread"><h3>${esc(t.cpnContact)} ${i + 1} · ${i === 0 ? esc(t.cpnFirst) : w + ' ' + esc(t.weeksShort)}</h3>${tag}</div>
+        <p class="muted small">${esc(t.cpnAround)} ${fmtD(d)}</p>
+        <details><summary>${esc(t.cpnQuestions)} (${t.cpnQ[i].length})</summary><ul class="small">${t.cpnQ[i].map(q => `<li>${esc(q)}</li>`).join('')}</ul></details>
+        <label class="f" for="cpn-n-${i}">${esc(t.cpnNote)}</label>
+        <textarea class="i" id="cpn-n-${i}" data-cpn-note="${i}" rows="2">${esc(st.note || '')}</textarea>
+        <div style="margin-top:8px"><button class="btn sm ${st.done ? 'ghost' : ''}" data-a="cpn-done" data-i="${i}">${st.done ? esc(t.cpnUnmark) : esc(t.cpnMark)}</button></div>
+      </div>`;
+    }).join('')}`;
+  }
+
+  function lockBox() {
+    const t = T();
+    return `<div class="lock-box">${I.lock}<h3 style="margin-top:6px">${esc(t.lockTitle)}</h3><p class="small">${esc(t.lockText)}</p><p class="small muted">${esc(t.lockFree)}</p>
+      <label class="f" for="code-in">${esc(t.lockHave)}</label>
+      <div class="row"><input class="i" id="code-in" placeholder="${esc(t.lockCodePh)}" autocapitalize="characters" autocomplete="off" spellcheck="false"><button class="btn" data-a="code">${esc(t.lockActivate)}</button></div>
+      <p class="small" id="code-msg"></p>
+      <div class="grid2" style="margin-top:8px"><a class="btn ghost sm" href="${BUY_URL}" target="_blank" rel="noopener">${esc(t.lockBuy)}</a><a class="btn wa sm" href="https://wa.me/${BUY_WA}?text=${encodeURIComponent(t.lockBuy + ' MamaPlan')}" target="_blank" rel="noopener">${I.wa}WhatsApp</a></div>
+    </div>`;
+  }
+
+  function vBudget() {
+    const t = T();
+    if (!S.unlocked) return `<h1>${esc(t.budgetTitle)}</h1><p class="muted small">${esc(t.budgetIntro)}</p>${lockBox()}`;
+    const b = budgetStats();
+    return `<h1>${esc(t.budgetTitle)}</h1><p class="muted small">${esc(t.budgetIntro)}</p>
+    <div class="card hero">
+      <div class="grid2">
+        <div><div class="muted small">${esc(t.bTotal)}</div><b style="font-size:22px">${money(b.planned)}</b></div>
+        <div><div class="muted small">${esc(t.bGathered)}</div><b style="font-size:22px">${money(b.gathered)}</b></div>
+      </div>
+      <div class="bar" style="margin:12px 0"><i style="width:${b.planned ? Math.min(100, Math.round(100 * (b.gathered + b.promised) / b.planned)) : 0}%"></i></div>
+      ${b.planned && b.left === 0 ? `<p><b>✓ ${esc(t.bReady)}</b></p>` : `<div class="spread"><div><div class="muted small">${esc(t.bLeft)}</div><b style="font-size:20px">${money(b.left)}</b></div>
+      <div style="text-align:right"><div class="muted small">${esc(t.bPerWeek)}</div><b style="font-size:24px;color:var(--sun)">${money(b.perWeek)}</b></div></div>
+      <p class="muted small">${b.weeks} ${esc(t.bWeeksLeft)}</p>`}
+    </div>
+    <p class="small muted">💡 ${esc(t.budgetExample)}</p>
+    <div class="card">
+      ${S.budget.lines.map((l, i) => `<div class="money-line">
+        <div class="lbl">${l.t != null ? `<input class="i" data-bl-t="${i}" value="${esc(l.t)}" placeholder="${esc(t.bPost)}" style="min-height:40px;padding:8px">` : `<span>${esc(lineLabel(l))}</span>`}</div>
+        <div><div class="sub">${esc(t.bPlanned)}</div><input class="i" inputmode="numeric" data-bl="${i}" data-f="planned" value="${l.planned || ''}" placeholder="0"></div>
+        <div><div class="sub">${esc(t.bPaid)}</div><input class="i" inputmode="numeric" data-bl="${i}" data-f="paid" value="${l.paid || ''}" placeholder="0"></div>
+        <button class="x" data-a="bl-del" data-i="${i}" aria-label="${esc(t.remove)}">×</button>
+      </div>`).join('')}
+      <button class="btn ghost sm" style="margin-top:10px" data-a="bl-add">+ ${esc(t.bAddLine)}</button>
+    </div>
+    <h2>${esc(t.bContrib)}</h2><p class="small muted">${esc(t.bContribHelp)}</p>
+    <div class="card">
+      ${S.budget.people.length ? S.budget.people.map((p, i) => `<div class="money-line">
+        <div><div class="sub">${esc(t.bName)}</div><input class="i" data-bp="${i}" data-f="name" value="${esc(p.name || '')}"></div>
+        <div><div class="sub">${esc(t.bAmount)}</div><input class="i" inputmode="numeric" data-bp="${i}" data-f="amount" value="${p.amount || ''}" placeholder="0"></div>
+        <button class="x" data-a="bp-del" data-i="${i}" aria-label="${esc(t.remove)}">×</button>
+        <label class="row small" style="grid-column:1 / -1;cursor:pointer"><span class="box ${p.received ? 'on' : ''}" data-a="bp-recv" data-i="${i}">${p.received ? I.tick : ''}</span>${esc(t.bReceived)}</label>
+      </div>`).join('') : ''}
+      <button class="btn ghost sm" style="margin-top:10px" data-a="bp-add">+ ${esc(t.bAddPerson)}</button>
+    </div>
+    <button class="btn wa block" data-a="share-budget">${I.wa}${esc(t.bShare)}</button>`;
+  }
+
+  function vBag() {
+    const t = T(); const all = bagStats(['mom', 'baby', 'papers', 'comp']);
+    return `<h1>${esc(t.bagTitle)}</h1><p class="muted small">${esc(t.bagIntro)}</p>
+    <div class="card"><div class="spread"><b>${all.ok}/${all.n}</b><span class="muted small">${esc(t.bagWhen)}</span></div><div class="bar" style="margin-top:8px"><i style="width:${Math.round(all.pct * 100)}%"></i></div></div>
+    ${['mom', 'baby', 'papers', 'comp'].map(c => {
+      const st = bagStats([c]);
+      return `<div class="card"><div class="spread"><h3>${esc(t.bagCats[c])}</h3><span class="tag ${st.pct === 1 ? 'ok' : ''}">${st.ok}/${st.n}</span></div>
+      <ul class="check">${S.bag[c].map((it, i) => `<li><span class="box ${it.ok ? 'on' : ''}" role="checkbox" aria-checked="${it.ok}" tabindex="0" data-a="bag-tog" data-c="${c}" data-i="${i}">${it.ok ? I.tick : ''}</span><span class="li-text ${it.ok ? 'done' : ''}">${esc(bagLabel(c, it))}</span><button class="x" data-a="bag-del" data-c="${c}" data-i="${i}" aria-label="${esc(t.bagDelete)}">×</button></li>`).join('')}</ul>
+      <div class="row" style="margin-top:8px"><input class="i" id="bag-new-${c}" placeholder="${esc(t.bagAddPh)}" maxlength="80"><button class="btn sm" data-a="bag-add" data-c="${c}">+</button></div></div>`;
+    }).join('')}
+    ${S.unlocked ? `<button class="btn wa block" data-a="share-bag">${I.wa}${esc(t.bagShare)}</button>` : lockBox()}`;
+  }
+
+  function person(path, title, opts) {
+    const t = T(); const o = getPath(path) || {}; opts = opts || {};
+    return `<div class="card"><h3>${esc(title)}</h3>
+      <label class="f">${esc(t.pName)}</label><input class="i" data-p="${path}.name" value="${esc(o.name || '')}">
+      ${opts.addr ? `<label class="f">${esc(t.pAddr)}</label><input class="i" data-p="${path}.addr" value="${esc(o.addr || '')}">` : ''}
+      <label class="f">${esc(t.pPhone)}</label>
+      <div class="row"><input class="i" type="tel" inputmode="tel" data-p="${path}.phone" value="${esc(o.phone || '')}">${o.phone ? `<a class="btn sm" href="${telHref(o.phone)}" aria-label="${esc(t.call)}">${I.phone}</a>` : ''}</div>
+      ${opts.group ? `<label class="f">${esc(t.pGroup)}</label><select class="i" data-p="${path}.group">${['', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', '?'].map(g => `<option ${o.group === g ? 'selected' : ''}>${g}</option>`).join('')}</select>` : ''}
+    </div>`;
+  }
+  function getPath(path) { return path.split('.').reduce((o, k) => (o == null ? o : o[k]), S.plan); }
+  function setPath(path, val) { const ks = path.split('.'); let o = S.plan; for (let i = 0; i < ks.length - 1; i++) { if (o[ks[i]] == null) o[ks[i]] = {}; o = o[ks[i]]; } o[ks[ks.length - 1]] = val; }
+
+  function vPlan() {
+    const t = T(); const p = S.plan;
+    const free = person('facility', t.pFacility, { addr: true }) + person('t1', t.pTransport1) + person('family', t.pFamily);
+    if (!S.unlocked) return `<h1>${esc(t.planTitle)}</h1><p class="muted small">${esc(t.planIntro)}</p>${free}${lockBox()}`;
+    return `<h1>${esc(t.planTitle)}</h1><p class="muted small">${esc(t.planIntro)}</p>
+    ${free}${person('attendant', t.pAttendant)}${person('t2', t.pTransport2)}${person('companion', t.pCompanion)}
+    <div class="card"><h3>${esc(t.pDonors)}</h3><p class="small muted">${esc(t.pDonorsHelp)}</p>
+      <label class="f">${esc(t.pMyGroup)}</label><select class="i" data-p="myGroup">${['', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', '?'].map(g => `<option ${p.myGroup === g ? 'selected' : ''}>${g}</option>`).join('')}</select></div>
+    ${person('donors.0', t.pDonor + ' 1', { group: true })}${person('donors.1', t.pDonor + ' 2', { group: true })}
+    ${person('kids', t.pKids)}
+    <div class="card"><h3>${esc(t.pMoney)}</h3><input class="i" data-p="money" value="${esc(p.money || '')}" placeholder="${esc(t.pMoneyPh)}"></div>
+    <div class="card"><h3>${esc(t.pWishes)}</h3><textarea class="i" data-p="wishes" placeholder="${esc(t.pWishesPh)}">${esc(p.wishes || '')}</textarea>
+      <h3 style="margin-top:12px">${esc(t.pUseful)}</h3><textarea class="i" data-p="useful" placeholder="${esc(t.pUsefulPh)}">${esc(p.useful || '')}</textarea><p class="small muted">🔒 ${esc(t.pUsefulNote)}</p></div>
+    <div class="callbar"><button class="btn block" data-go="sheet">${I.doc}${esc(t.pSheet)}</button><button class="btn wa block" data-a="share-plan">${I.wa}${esc(t.pShare)}</button></div>`;
+  }
+
+  function vAlerts() {
+    const t = T(); const p = S.plan;
+    const calls = [[p.facility, t.alertCallFacility], [p.t1, t.alertCallTransport], [p.family, t.alertCallFamily]].filter(c => c[0] && c[0].phone);
+    const list = (title, arr, cls) => `<div class="card ${cls}"><h3>${esc(title)}</h3><ul class="signs">${arr.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>`;
+    return `<h1 style="color:var(--danger)">${esc(t.alertTitle)}</h1>
+    <div class="callbar">${calls.length ? calls.map(c => `<a class="btn danger block" href="${telHref(c[0].phone)}">${I.phone}${esc(c[1])}${c[0].name ? ' · ' + esc(c[0].name) : ''}</a>`).join('') : `<p class="small muted">${esc(t.alertNoPhone)} <a href="#" data-go="plan">${esc(t.tabPlan)} ›</a></p>`}</div>
+    <div class="seg"><button data-a="seg" data-v="preg" class="${seg === 'preg' ? 'on' : ''}">${esc(t.alertSegPreg)}</button><button data-a="seg" data-v="after" class="${seg === 'after' ? 'on' : ''}">${esc(t.alertSegAfter)}</button></div>
+    ${seg === 'preg' ? list(t.alertNow, t.signsNow, 'danger-card') + list(t.alertLabour, t.signsLabour, 'soon-card') + list(t.alertSoon, t.signsSoon, '')
+      : list(t.alertAfterMom, t.signsAfterMom, 'danger-card') + list(t.alertBaby, t.signsBaby, 'danger-card') + list(t.alertAfterMomSoon, t.signsAfterMomSoon, 'soon-card')}
+    <p class="small muted">${esc(t.alertSource)}</p>
+    ${S.signsRead ? `<p class="tag ok">✓ ${esc(t.alertRead)}</p>` : `<button class="btn block" data-a="signs-read">${I.tick}${esc(t.alertRead)}</button>`}`;
+  }
+
+  function ctStats() {
+    const c = S.contractions.filter(x => x.e); const now = Date.now(); const hr = c.filter(x => now - x.s < 3600000);
+    const ints = []; for (let i = 1; i < hr.length; i++) ints.push(hr[i].s - hr[i - 1].s);
+    const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
+    return { n: hr.length, int: avg(ints), dur: avg(hr.map(x => x.e - x.s)) };
+  }
+  const mmss = ms => { const s = Math.round(ms / 1000); return Math.floor(s / 60) + ' min ' + String(s % 60).padStart(2, '0') + ' s'; };
+  const hhmm = ms => new Date(ms).toLocaleTimeString(S.lang === 'en' ? 'en-GB' : 'fr-FR', { hour: '2-digit', minute: '2-digit' });
+  function vContractions() {
+    const t = T();
+    if (!S.unlocked) return `<h1>${esc(t.ctTitle)}</h1><p class="muted small">${esc(t.ctIntro)}</p>${lockBox()}`;
+    const running = S.contractions.length && !S.contractions[S.contractions.length - 1].e; const st = ctStats();
+    const rows = S.contractions.slice(-12).map((x, i, arr) => { const prev = S.contractions[S.contractions.indexOf(x) - 1]; return `<tr><td>${hhmm(x.s)}</td><td>${x.e ? mmss(x.e - x.s) : '…'}</td><td>${prev ? mmss(x.s - prev.s) : '–'}</td></tr>`; }).reverse().join('');
+    return `<h1>${esc(t.ctTitle)}</h1><p class="muted small">${esc(t.ctIntro)}</p>
+    <div class="card danger-card small"><b>${esc(t.ctWarn)}</b></div>
+    <button class="btn ct-btn block ${running ? 'danger' : ''}" data-a="ct">${running ? esc(t.ctStop) + ' <span id="ct-live"></span>' : esc(t.ctStart)}</button>
+    <div class="card"><h3>${esc(t.ctLastHour)}</h3><div class="grid2"><div class="stat"><b>${st.n}</b><span>${esc(t.ctCount)}</span></div><div class="stat"><b>${st.int ? mmss(st.int) : '–'}</b><span>${esc(t.ctAvgInt)}</span></div></div>
+      <div class="stat" style="margin-top:10px"><b>${st.dur ? mmss(st.dur) : '–'}</b><span>${esc(t.ctAvgDur)}</span></div></div>
+    <div class="card">${S.contractions.length ? `<table class="t"><thead><tr><th>${esc(t.ctTime)}</th><th>${esc(t.ctDur)}</th><th>${esc(t.ctInt)}</th></tr></thead><tbody>${rows}</tbody></table>` : `<p class="muted">${esc(t.ctEmpty)}</p>`}</div>
+    <div class="grid2"><button class="btn wa sm" data-a="share-ct">${I.wa}${esc(t.ctShare)}</button><button class="btn ghost sm" data-a="ct-clear">${esc(t.ctClear)}</button></div>`;
+  }
+
+  function sheetRows() {
+    const t = T(), p = S.plan; const pr = o => o && (o.name || o.phone) ? [o.name, o.addr, o.phone].filter(Boolean).join(' · ') : '';
+    return [
+      [t.dueOn, S.dpa ? fmtD(parseD(S.dpa)) : ''], [t.pFacility, pr(p.facility)], [t.pAttendant, pr(p.attendant)],
+      [t.pMyGroup, p.myGroup], [t.pDonors, p.donors.map(d => [d.name, d.group, d.phone].filter(Boolean).join(' · ')).filter(Boolean).join(' / ')],
+      [t.pCompanion, pr(p.companion)], [t.pTransport1, pr(p.t1)], [t.pTransport2, pr(p.t2)], [t.pFamily, pr(p.family)],
+      [t.pKids, pr(p.kids)], [t.pMoney, p.money], [t.pWishes, p.wishes], [t.pUseful, p.useful]
+    ].filter(r => r[1]);
+  }
+  function vSheet() {
+    const t = T();
+    if (!S.unlocked) return `<h1>${esc(t.shTitle)}</h1>${lockBox()}`;
+    return `<div class="card sheet"><h1>${esc(t.shTitle)}</h1><p><b>${esc(t.shFor)} ${esc(S.name || '…')}</b></p>
+      <table>${sheetRows().map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1]).replace(/\n/g, '<br>')}</td></tr>`).join('')}</table>
+      <h3 style="color:#C2262E;margin-top:14px">${esc(t.alertNow)}</h3><ul class="small">${t.signsNow.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
+      <p class="small" style="color:#666">${esc(t.shGenerated)}</p></div>
+    <div class="callbar noprint"><button class="btn block" data-a="print">${I.print}${esc(t.shPrint)}</button><button class="btn wa block" data-a="share-plan">${I.wa}${esc(t.pShare)}</button><button class="btn ghost block" data-go="${prevView === 'sheet' ? 'home' : prevView}">${esc(t.shBack)}</button></div>`;
+  }
+
+  function vSettings() {
+    const t = T();
+    return `<h1>${esc(t.setTitle)}</h1>
+    <div class="card"><label class="f">${esc(t.setLang)}</label>
+      <div class="seg"><button data-a="lang" data-v="fr" class="${S.lang === 'fr' ? 'on' : ''}">Français</button><button data-a="lang" data-v="en" class="${S.lang === 'en' ? 'on' : ''}">English</button></div>
+      <label class="f" for="set-name">${esc(t.setName)}</label><input class="i" id="set-name" value="${esc(S.name)}" maxlength="40">
+      <label class="f" for="set-dpa">${esc(t.setDpa)}</label><input class="i" type="date" id="set-dpa" value="${esc(S.dpa)}">
+      <button class="btn block" style="margin-top:12px" data-a="set-save">${esc(t.setSave)}</button></div>
+    ${S.unlocked ? `<div class="card"><p class="tag ok">✓ ${esc(t.lockActive)}</p><p class="small muted">${esc(S.code)}</p></div>` : lockBox()}
+    <div class="card"><h3>${esc(t.setInstall)}</h3><p class="small">${esc(t.setInstallHelp)}</p></div>
+    <div class="card"><h3>${esc(t.setBackup)}</h3><p class="small muted">${esc(t.setBackupHelp)}</p>
+      ${S.unlocked ? `<div class="grid2"><button class="btn sm" data-a="backup">${esc(t.setBackup)}</button><label class="btn ghost sm" style="cursor:pointer">${esc(t.setRestore)}<input type="file" accept="application/json,.json" id="restore" class="hidden"></label></div>` : `<p class="small">${I.lock.replace('<svg', '<svg width="16" height="16"')} ${esc(t.lockTitle)}</p>`}</div>
+    <div class="card"><h3>${esc(t.setAbout)}</h3><p class="small">${esc(t.setAboutText)}</p><p class="small muted">${esc(t.disclaimer)}</p>
+      <button class="btn danger sm" data-a="erase">${esc(t.setErase)}</button></div>`;
+  }
+
+  // ---------- rendu ----------
+  const VIEWS = { home: vHome, cpn: vCpn, budget: vBudget, bag: vBag, plan: vPlan, alerts: vAlerts, contractions: vContractions, sheet: vSheet, settings: vSettings };
+  function render(keepScroll) {
+    const root = document.getElementById('root');
+    document.documentElement.lang = S ? S.lang : navLangSel;
+    if (!S || !S.dpa) { root.innerHTML = `<div class="app">${onboarding()}</div>`; return; }
+    const y = window.scrollY; const sel = keepScroll ? focusSel(document.activeElement) : null;
+    root.innerHTML = `<div class="app">${header()}<main id="main">${VIEWS[view]()}</main></div>${tabs()}`;
+    window.scrollTo(0, keepScroll ? y : 0);
+    if (sel) { const el = document.querySelector(sel); if (el) { el.focus({ preventScroll: true }); try { const n = el.value.length; el.setSelectionRange(n, n); } catch (e) { } } }
+    document.title = 'MamaPlan';
+  }
+  // garde le champ actif après un nouveau rendu (sinon le clavier se ferme en passant d'un champ à l'autre)
+  function focusSel(el) {
+    if (!el || !el.matches || !el.matches('input,textarea,select')) return null;
+    if (el.id) return '#' + CSS.escape(el.id);
+    const attrs = ['data-p', 'data-bl', 'data-bp', 'data-f', 'data-bl-t', 'data-cpn-note'].filter(a => el.hasAttribute(a));
+    return attrs.length ? attrs.map(a => `[${a}="${CSS.escape(el.getAttribute(a))}"]`).join('') : null;
+  }
+  function go(v) { if (v !== view) { prevView = view; view = v; } render(false); }
+
+  // ---------- partage ----------
+  function shareBag() {
+    const t = T(); let out = `🧳 MamaPlan · ${t.bagMissing} :\n`; let any = false;
+    for (const c of ['mom', 'baby', 'papers', 'comp']) { const miss = S.bag[c].filter(i => !i.ok); if (miss.length) { any = true; out += `\n*${t.bagCats[c]}*\n` + miss.map(i => '• ' + bagLabel(c, i)).join('\n') + '\n'; } }
+    share(any ? out : '🧳 MamaPlan : ' + t.bagComplete);
+  }
+  function shareBudget() {
+    const t = T(), b = budgetStats();
+    let out = `💰 MamaPlan · ${t.budgetTitle}\n${t.bTotal} : ${money(b.planned)}\n${t.bGathered} : ${money(b.gathered)}\n${t.bLeft} : ${money(b.left)}\n${t.bPerWeek} : ${money(b.perWeek)} (${b.weeks} ${t.bWeeksLeft})\n`;
+    S.budget.lines.filter(l => num(l.planned)).forEach(l => { out += `• ${lineLabel(l)} : ${money(l.planned)}\n`; });
+    if (S.budget.people.length) out += `\n${t.bContrib} :\n` + S.budget.people.map(p => `• ${p.name || '?'} : ${money(p.amount)} ${p.received ? '✓' : '…'}`).join('\n');
+    share(out);
+  }
+  function sharePlan() { const t = T(); share(`⭐ ${t.shTitle} · ${S.name || ''}\n\n` + sheetRows().map(r => `*${r[0]}* : ${r[1]}`).join('\n') + `\n\n🚨 ${t.alertNow}\n` + t.signsNow.map(s => '• ' + s).join('\n') + `\n\n${t.shareIntro}`); }
+  function shareCt() { const t = T(); const st = ctStats(); share(`⏱ ${t.ctTitle}\n${t.ctLastHour} : ${st.n} ${t.ctCount}, ${t.ctAvgInt} ${st.int ? mmss(st.int) : '–'}, ${t.ctAvgDur} ${st.dur ? mmss(st.dur) : '–'}\n` + S.contractions.slice(-10).map((x, i, a) => `${hhmm(x.s)} · ${x.e ? mmss(x.e - x.s) : '…'}`).join('\n')); }
+
+  // ---------- événements ----------
+  document.addEventListener('click', e => {
+    const g = e.target.closest('[data-go]'); const a = e.target.closest('[data-a]');
+    if (a) { e.preventDefault(); act(a.dataset.a, a); return; }
+    if (g) { e.preventDefault(); go(g.dataset.go); }
+  });
+  document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.box[data-a]')) { e.preventDefault(); act(e.target.dataset.a, e.target); } });
+  document.addEventListener('input', e => {
+    const el = e.target; if (!S) return;
+    if (el.dataset.p != null) { setPath(el.dataset.p, el.value); save(); return; }
+    if (el.dataset.cpnNote != null) { const i = el.dataset.cpnNote; S.cpn[i] = Object.assign(S.cpn[i] || {}, { note: el.value }); save(); return; }
+    if (el.dataset.bl != null) { S.budget.lines[el.dataset.bl][el.dataset.f] = num(el.value); save(); return; }
+    if (el.dataset.blT != null) { S.budget.lines[el.dataset.blT].t = el.value; save(); return; }
+    if (el.dataset.bp != null) { const p = S.budget.people[el.dataset.bp]; p[el.dataset.f] = el.dataset.f === 'amount' ? num(el.value) : el.value; save(); }
+  });
+  document.addEventListener('change', e => {
+    const el = e.target;
+    if (el.dataset && ((el.dataset.bl != null || el.dataset.bp != null) && el.dataset.f !== 'name' || el.dataset.p != null && /phone$/.test(el.dataset.p))) setTimeout(() => render(true), 0);
+    if (el.id === 'restore' && el.files[0]) {
+      const r = new FileReader(); r.onload = () => { try { const o = JSON.parse(r.result); if (o.v !== 1 || !o.dpa) throw 0; S = Object.assign(blankState(o.lang), o); save(); toast(T().setRestored); go('home'); } catch (x) { toast(T().setBadFile); } }; r.readAsText(el.files[0]);
+    }
+  });
+
+  function act(a, el) {
+    const t = S ? T() : I18N[navLangSel];
+    switch (a) {
+      case 'ob-lang': navLangSel = el.dataset.v; render(); break;
+      case 'ob-mode': { const n = document.getElementById('ob-name').value; obMode = el.dataset.v; render(); document.getElementById('ob-name').value = n; break; }
+      case 'ob-start': {
+        const v = document.getElementById('ob-date').value; if (!v) { document.getElementById('ob-err').textContent = t.obNeedDate; return; }
+        let d = parseD(v); if (obMode === 'ddr') d = new Date(d.getTime() + 280 * DAY);
+        S = blankState(navLangSel); S.name = document.getElementById('ob-name').value.trim(); S.dpa = isoD(d); save(); view = 'home'; render(); break;
+      }
+      case 'lang': S.lang = el.dataset.v; save(); render(true); break;
+      case 'set-save': { const d = document.getElementById('set-dpa').value; S.name = document.getElementById('set-name').value.trim(); if (d) S.dpa = d; save(); toast(t.saved); render(true); break; }
+      case 'cpn-done': { const i = el.dataset.i; S.cpn[i] = Object.assign(S.cpn[i] || {}, { done: !(S.cpn[i] && S.cpn[i].done) }); save(); render(true); break; }
+      case 'bag-tog': { const it = S.bag[el.dataset.c][el.dataset.i]; it.ok = !it.ok; save(); render(true); break; }
+      case 'bag-del': S.bag[el.dataset.c].splice(el.dataset.i, 1); save(); render(true); break;
+      case 'bag-add': { const c = el.dataset.c, inp = document.getElementById('bag-new-' + c); const v = inp.value.trim(); if (v) { S.bag[c].push({ t: v, ok: false }); save(); render(true); } break; }
+      case 'bl-add': S.budget.lines.push({ t: '', planned: 0, paid: 0 }); save(); render(true); break;
+      case 'bl-del': S.budget.lines.splice(el.dataset.i, 1); save(); render(true); break;
+      case 'bp-add': S.budget.people.push({ name: '', amount: 0, received: false }); save(); render(true); break;
+      case 'bp-del': S.budget.people.splice(el.dataset.i, 1); save(); render(true); break;
+      case 'bp-recv': { const p = S.budget.people[el.dataset.i]; p.received = !p.received; save(); render(true); break; }
+      case 'seg': seg = el.dataset.v; render(true); break;
+      case 'signs-read': S.signsRead = true; save(); render(true); break;
+      case 'code': {
+        const v = document.getElementById('code-in').value; const msg = document.getElementById('code-msg');
+        if (validCode(v)) { const s = normCode(v); S.unlocked = true; S.code = 'MP-' + s.slice(0, 4) + '-' + s.slice(4); save(); toast(t.lockOk); render(true); }
+        else { msg.textContent = t.lockBad; msg.style.color = 'var(--danger)'; }
+        break;
+      }
+      case 'ct': { const last = S.contractions[S.contractions.length - 1]; if (last && !last.e) last.e = Date.now(); else S.contractions.push({ s: Date.now() }); if (S.contractions.length > 200) S.contractions = S.contractions.slice(-200); save(); render(true); break; }
+      case 'ct-clear': if (confirm(t.ctClear + ' ?')) { S.contractions = []; save(); render(true); } break;
+      case 'share-bag': shareBag(); break;
+      case 'share-budget': shareBudget(); break;
+      case 'share-plan': sharePlan(); break;
+      case 'share-ct': shareCt(); break;
+      case 'print': window.print(); break;
+      case 'backup': {
+        const blob = new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' }); const u = URL.createObjectURL(blob);
+        const l = document.createElement('a'); l.href = u; l.download = 'mamaplan-sauvegarde-' + isoD(new Date()) + '.json'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); break;
+      }
+      case 'erase': if (confirm(t.setEraseConfirm)) { try { localStorage.removeItem(KEY); } catch (x) { } S = null; view = 'home'; render(); } break;
+    }
+  }
+
+  // minuterie de la contraction en cours
+  setInterval(() => { const el = document.getElementById('ct-live'); if (el && S) { const l = S.contractions[S.contractions.length - 1]; if (l && !l.e) el.textContent = '· ' + mmss(Date.now() - l.s); } }, 1000);
+
+  // test hooks (utilisés par les tests automatiques)
+  window.__mp = { validCode, checkOf, readiness: () => S && readiness(), budgetStats: () => S && budgetStats(), state: () => S, go };
+
+  render();
+  if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => { });
+})();
+</script>
+</body>
+</html>
